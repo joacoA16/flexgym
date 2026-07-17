@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: gimnasio-db
+    restart: always
+    environment:
+      # Postgres leerá estas variables de tu archivo .env
+      POSTGRES_DB: gimnasio_db
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      # Esto asegura que los datos no se borren si apagas el contenedor
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: gimnasio-app
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
