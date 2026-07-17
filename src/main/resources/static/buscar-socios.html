@@ -23,6 +23,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="panel-profe.html"><i class="bi bi-card-checklist"></i> Enviar Rutina</a>
                     </li>
+                    <!-- NUEVO: Botón de Precio Cuota agregado a la barra -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalPrecio" onclick="cargarPrecioActual()">
+                            <i class="bi bi-currency-dollar"></i> Precio Cuota
+                        </a>
+                    </li>
                 </ul>
                 <button class="btn btn-outline-danger btn-sm" onclick="cerrarSesion()">
                     <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
@@ -74,6 +80,33 @@
         </div>
     </div>
 
+    <!-- NUEVO: Modal de Precio Cuota -->
+    <div class="modal fade" id="modalPrecio" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-tag"></i> Actualizar Precio de Cuota</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">Este será el valor global que se cobrará en Mercado Pago y Efectivo.</p>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">$</span>
+                        <input type="number" id="inputPrecio" class="form-control form-control-lg" placeholder="Cargando...">
+                    </div>
+                    <div id="alertaPrecio"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="guardarNuevoPrecio()">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NUEVO: Script de Bootstrap (Requerido para que el modal se abra) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         let todosLosSocios = [];
 
@@ -82,7 +115,7 @@
             const token = localStorage.getItem("jwt_token");
             if (!token) {
                 alert("Sesión expirada. Por favor, inicia sesión.");
-                window.location.href = "index.html";
+                window.location.href = "login.html"; // Ajustado para que vaya a login.html
                 return;
             }
             await cargarSocios(token);
@@ -100,7 +133,7 @@
 
                 if (response.ok) {
                     todosLosSocios = await response.json();
-                    aplicarFiltros(); // En lugar de renderizarTabla directo, llamamos a aplicarFiltros para que mantenga las búsquedas si recarga
+                    aplicarFiltros(); 
                 } else {
                     document.getElementById("tablaSocios").innerHTML = `<tr><td colspan="6" class="text-danger text-center">Error al obtener los datos.</td></tr>`;
                 }
@@ -131,7 +164,6 @@
                     ? '<span class="badge bg-danger">Vencida</span>' 
                     : '<span class="badge bg-success">Al Día</span>';
 
-                // Solo mostramos el botón de cobrar si la cuota está vencida (Opcional, pero recomendado)
                 const botonCobrar = estaVencida
                     ? `<button class="btn btn-success btn-sm" onclick="registrarPagoEfectivo('${socio.dni}', '${socio.nombre}')"><i class="bi bi-cash"></i> Cobrar</button>`
                     : `<button class="btn btn-secondary btn-sm" disabled><i class="bi bi-check2-all"></i> Pagado</button>`;
@@ -195,7 +227,6 @@
                     const mensaje = await response.text();
                     alert(`✅ ¡Listo! ${mensaje}`);
                     
-                    // Recargamos los datos para actualizar la tabla instantáneamente
                     await cargarSocios(token);
                 } else {
                     const errorMsg = await response.text();
@@ -209,7 +240,60 @@
         // 7. Función para cerrar sesión
         function cerrarSesion() {
             localStorage.clear();
-            window.location.href = "index.html";
+            window.location.href = "login.html"; // Ajustado a login.html para evitar el error blanco
+        }
+
+        // ==========================================
+        // NUEVO: Funciones para el Modal de Precio
+        // ==========================================
+        async function cargarPrecioActual() {
+            const token = localStorage.getItem("jwt_token");
+            try {
+                const response = await fetch("/api/configuracion/precio", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const precio = await response.json();
+                    document.getElementById("inputPrecio").value = precio;
+                }
+            } catch (error) {
+                console.error("Error al cargar el precio", error);
+            }
+        }
+
+        async function guardarNuevoPrecio() {
+            const token = localStorage.getItem("jwt_token");
+            const nuevoPrecio = parseFloat(document.getElementById("inputPrecio").value);
+            const alerta = document.getElementById("alertaPrecio");
+
+            if (!nuevoPrecio || nuevoPrecio <= 0) {
+                alerta.innerHTML = `<div class="alert alert-warning py-2">Ingresa un valor válido.</div>`;
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/configuracion/precio", {
+                    method: "PUT",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ precio: nuevoPrecio })
+                });
+
+                if (response.ok) {
+                    alerta.innerHTML = `<div class="alert alert-success py-2">¡Precio actualizado con éxito!</div>`;
+                    setTimeout(() => {
+                        alerta.innerHTML = "";
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('modalPrecio'));
+                        modal.hide();
+                    }, 1500);
+                } else {
+                    alerta.innerHTML = `<div class="alert alert-danger py-2">Error al guardar.</div>`;
+                }
+            } catch (error) {
+                alerta.innerHTML = `<div class="alert alert-danger py-2">Error de conexión.</div>`;
+            }
         }
     </script>
 </body>
