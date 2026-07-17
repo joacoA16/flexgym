@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gimnasio - Buscador de Socios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand"><i class="bi bi-shield-lock"></i> Panel Profe/Admin</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="buscar-socios.html"><i class="bi bi-search"></i> Buscador</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="panel-profe.html"><i class="bi bi-card-checklist"></i> Enviar Rutina</a>
+                    </li>
+                </ul>
+                <button class="btn btn-outline-danger btn-sm" onclick="cerrarSesion()">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h3 class="mb-4 text-primary"><i class="bi bi-people-fill"></i> Directorio de Socios</h3>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                            <input type="text" id="searchInput" class="form-control" placeholder="Buscar por Nombre, Apellido o DNI...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="statusFilter" class="form-select">
+                            <option value="todos">Todos los Estados</option>
+                            <option value="activa">Cuota Al Día</option>
+                            <option value="vencida">Cuota Vencida</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>DNI</th>
+                                <th>Socio</th>
+                                <th>Teléfono</th>
+                                <th>Vencimiento Cuota</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaSocios">
+                            <tr><td colspan="6" class="text-center text-muted">Cargando socios...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let todosLosSocios = [];
+
+        // 1. Verificación de seguridad y carga inicial
+        document.addEventListener("DOMContentLoaded", async () => {
+            const token = localStorage.getItem("jwt_token");
+            if (!token) {
+                alert("Sesión expirada. Por favor, inicia sesión.");
+                window.location.href = "login.html";
+                return;
+            }
+            await cargarSocios(token);
+        });
+
+        // 2. Traer los socios desde Spring Boot
+        async function cargarSocios(token) {
+            try {
+                const response = await fetch("/api/socios", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    todosLosSocios = await response.json();
+                    aplicarFiltros(); // En lugar de renderizarTabla directo, llamamos a aplicarFiltros para que mantenga las búsquedas si recarga
+                } else {
+                    document.getElementById("tablaSocios").innerHTML = `<tr><td colspan="6" class="text-danger text-center">Error al obtener los datos.</td></tr>`;
+                }
+            } catch (error) {
+                document.getElementById("tablaSocios").innerHTML = `<tr><td colspan="6" class="text-danger text-center">Error de conexión con el servidor.</td></tr>`;
+            }
+        }
+
+        // 3. Pintar los datos en la tabla
+        function renderizarTabla(socios) {
+            const tbody = document.getElementById("tablaSocios");
+            tbody.innerHTML = "";
+
+            if (socios.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No se encontraron socios que coincidan.</td></tr>`;
+                return;
+            }
+
+            const hoy = new Date();
+
+            socios.forEach(socio => {
+                const fechaVencimiento = new Date(socio.fechaVencimientoCuota);
+                const estaVencida = fechaVencimiento < hoy;
+
+                const fechaLegible = fechaVencimiento.toLocaleDateString('es-AR');
+
+                const badgeEstado = estaVencida 
+                    ? '<span class="badge bg-danger">Vencida</span>' 
+                    : '<span class="badge bg-success">Al Día</span>';
+
+                // Solo mostramos el botón de cobrar si la cuota está vencida (Opcional, pero recomendado)
+                const botonCobrar = estaVencida
+                    ? `<button class="btn btn-success btn-sm" onclick="registrarPagoEfectivo('${socio.dni}', '${socio.nombre}')"><i class="bi bi-cash"></i> Cobrar</button>`
+                    : `<button class="btn btn-secondary btn-sm" disabled><i class="bi bi-check2-all"></i> Pagado</button>`;
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td class="fw-bold text-secondary">${socio.dni}</td>
+                    <td>${socio.nombre} ${socio.apellido}</td>
+                    <td>${socio.telefono || '-'}</td>
+                    <td>${fechaLegible}</td>
+                    <td>${badgeEstado}</td>
+                    <td class="text-center">${botonCobrar}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 4. Lógica de Filtrado
+        function aplicarFiltros() {
+            const textoBusqueda = document.getElementById("searchInput").value.toLowerCase();
+            const estadoFiltro = document.getElementById("statusFilter").value;
+            const hoy = new Date();
+
+            const sociosFiltrados = todosLosSocios.filter(socio => {
+                const nombreCompleto = `${socio.nombre} ${socio.apellido}`.toLowerCase();
+                const coincideTexto = nombreCompleto.includes(textoBusqueda) || socio.dni.toString().includes(textoBusqueda);
+
+                const fechaVencimiento = new Date(socio.fechaVencimientoCuota);
+                const estaVencida = fechaVencimiento < hoy;
+
+                let coincideEstado = true;
+                if (estadoFiltro === "activa") coincideEstado = !estaVencida;
+                if (estadoFiltro === "vencida") coincideEstado = estaVencida;
+
+                return coincideTexto && coincideEstado;
+            });
+
+            renderizarTabla(sociosFiltrados);
+        }
+
+        // 5. Escuchadores de eventos
+        document.getElementById("searchInput").addEventListener("input", aplicarFiltros);
+        document.getElementById("statusFilter").addEventListener("change", aplicarFiltros);
+
+        // 6. Procesar el pago manual en efectivo
+        async function registrarPagoEfectivo(dni, nombre) {
+            const confirmacion = confirm(`¿Confirmas que recibiste el pago en efectivo de ${nombre} (DNI: ${dni})?`);
+            if (!confirmacion) return;
+
+            const token = localStorage.getItem("jwt_token");
+
+            try {
+                const response = await fetch(`/api/pagos/efectivo/${dni}`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const mensaje = await response.text();
+                    alert(`✅ ¡Listo! ${mensaje}`);
+                    
+                    // Recargamos los datos para actualizar la tabla instantáneamente
+                    await cargarSocios(token);
+                } else {
+                    const errorMsg = await response.text();
+                    alert(`❌ Error del servidor: ${errorMsg}`);
+                }
+            } catch (error) {
+                alert(`❌ Error de conexión al intentar registrar el pago.`);
+            }
+        }
+
+        // 7. Función para cerrar sesión
+        function cerrarSesion() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>
