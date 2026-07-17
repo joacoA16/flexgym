@@ -123,7 +123,7 @@
             // Si no hay token guardado, redirigimos inmediatamente al login
             if (!token) {
                 alert("No tienes permiso para acceder aquí. Por favor, inicia sesión.");
-                window.location.href = "login.html";
+                window.location.href = "index.html";
                 return;
             }
 
@@ -179,7 +179,7 @@
 
             if (!token) {
                 mostrarAlerta("Tu sesión ha expirado. Volviendo al login...", "danger");
-                setTimeout(() => window.location.href = "login.html", 2000);
+                setTimeout(() => window.location.href = "index.html", 2000);
                 return;
             }
 
@@ -208,7 +208,7 @@
 
             // 3. Preparamos todas las peticiones HTTP al mismo tiempo
             const promesasDeEnvio = listaDnis.map(dni => {
-                const url = `http://localhost:8080/api/socios/${dni}/rutina`;
+                const url = `/api/socios/${dni}/rutina`;
                 
                 return fetch(url, {
                     method: "POST",
@@ -266,7 +266,7 @@
         // Función para cerrar sesión (borra el token y redirige)
         function cerrarSesion() {
             localStorage.clear();
-            window.location.href = "login.html";
+            window.location.href = "index.html";
         }
 
         // Función auxiliar para mostrar alertas
