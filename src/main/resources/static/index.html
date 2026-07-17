@@ -65,7 +65,7 @@
             const password = document.getElementById("passwordInput").value.trim();
             const alertContainer = document.getElementById("loginAlert");
             
-            const url = perfil === "socio" ? "http://localhost:8080/api/auth/socio" : "http://localhost:8080/api/auth/profe";
+            const url = perfil === "socio" ? "/api/auth/socio" : "/api/auth/profe";
 
             // Armamos el payload dinámicamente: Si es profe mandamos la clave, si es socio solo el DNI
             const payload = perfil === "socio" ? { dni: dni } : { dni: dni, password: password };
