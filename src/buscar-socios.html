@@ -91,7 +91,7 @@
         // 2. Traer los socios desde Spring Boot
         async function cargarSocios(token) {
             try {
-                const response = await fetch("http://localhost:8080/api/socios", {
+                const response = await fetch("/api/socios", {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${token}`
@@ -184,7 +184,7 @@
             const token = localStorage.getItem("jwt_token");
 
             try {
-                const response = await fetch(`http://localhost:8080/api/pagos/efectivo/${dni}`, {
+                const response = await fetch(`/api/pagos/efectivo/${dni}`, {
                     method: "POST",
                     headers: {
                         "Authorization": `Bearer ${token}`

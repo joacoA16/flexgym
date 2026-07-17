@@ -64,7 +64,7 @@
             alertContainer.innerHTML = "";
 
             try {
-                const response = await fetch("http://localhost:8080/api/pagos/mercado-pago/link", {
+                const response = await fetch("/api/pagos/mercado-pago/link", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

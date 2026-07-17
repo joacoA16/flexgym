@@ -282,7 +282,7 @@
         async function cargarPrecioActual() {
             const token = localStorage.getItem("jwt_token");
             try {
-                const response = await fetch("http://localhost:8080/api/configuracion/precio", {
+                const response = await fetch("/api/configuracion/precio", {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 if (response.ok) {
@@ -305,7 +305,7 @@
             }
 
             try {
-                const response = await fetch("http://localhost:8080/api/configuracion/precio", {
+                const response = await fetch("/api/configuracion/precio", {
                     method: "PUT",
                     headers: { 
                         "Content-Type": "application/json",

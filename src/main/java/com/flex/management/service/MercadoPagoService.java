@@ -20,9 +20,12 @@ import com.mercadopago.resources.preference.Preference;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+
 @Service
 @RequiredArgsConstructor
 public class MercadoPagoService {
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     private final SocioService socioService;
     private final PagoService pagoService;
@@ -53,18 +56,18 @@ public class MercadoPagoService {
 
             // 2. Configurar URLs de retorno (A dónde vuelve el socio tras pagar)
            PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-        .success("https://frenzy-cartwheel-consult.ngrok-free.dev/pago-exitoso") // ¡Esta es la que Mercado Pago está pidiendo!
-        .pending("https://frenzy-cartwheel-consult.ngrok-free.dev/pago-pendiente")
-        .failure("https://frenzy-cartwheel-consult.ngrok-free.dev/pago-fallido")
+        .success(baseUrl + "/pago-exitoso") 
+        .pending(baseUrl + "/pago-pendiente")
+        .failure(baseUrl + "/pago-fallido")
         .build();
 
             // 3. Crear la petición de la preferencia
            PreferenceRequest preferenceRequest = PreferenceRequest.builder()
         .items(items)
-        .backUrls(backUrls) // <--- REVISA ESTA LÍNEA. Es crucial para que Mercado Pago reciba las URLs
+        .backUrls(backUrls) 
         .autoReturn("approved") 
         .externalReference(dniSocio)
-        .notificationUrl("https://frenzy-cartwheel-consult.ngrok-free.dev/api/pagos/webhook")
+        .notificationUrl(baseUrl + "/api/pagos/webhook")
         .build();
 
             // 4. Comunicarse con la API de Mercado Pago
