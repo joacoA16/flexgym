@@ -82,7 +82,7 @@
             const token = localStorage.getItem("jwt_token");
             if (!token) {
                 alert("Sesión expirada. Por favor, inicia sesión.");
-                window.location.href = "login.html";
+                window.location.href = "index.html";
                 return;
             }
             await cargarSocios(token);
@@ -209,7 +209,7 @@
         // 7. Función para cerrar sesión
         function cerrarSesion() {
             localStorage.clear();
-            window.location.href = "login.html";
+            window.location.href = "index.html";
         }
     </script>
 </body>
