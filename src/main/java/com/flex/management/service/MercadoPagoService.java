@@ -40,56 +40,59 @@ public class MercadoPagoService {
     }
 
     public String crearPreferenciaPago(String dniSocio, Double monto) {
-        try {
-            Socio socio = socioService.buscarPorDni(dniSocio);
+    try {
+        Socio socio = socioService.buscarPorDni(dniSocio);
 
-            // 1. Configurar el ítem a cobrar
-            PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
-                    .title("Cuota Gimnasio - " + socio.getNombre() + " " + socio.getApellido())
-                    .quantity(1)
-                    .unitPrice(new BigDecimal(monto.toString()))
-                    .currencyId("ARS") 
-                    .build();
+        // 1. Configurar el ítem a cobrar
+        PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
+                .title("Cuota Gimnasio - " + socio.getNombre() + " " + socio.getApellido())
+                .quantity(1)
+                .unitPrice(new BigDecimal(monto.toString()))
+                .currencyId("ARS") 
+                .build();
 
-            List<PreferenceItemRequest> items = new ArrayList<>();
-            items.add(itemRequest);
+        List<PreferenceItemRequest> items = new ArrayList<>();
+        items.add(itemRequest);
 
-            // 2. Configurar URLs de retorno (A dónde vuelve el socio tras pagar)
-           PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-        .success(baseUrl + "/pago-exitoso") 
-        .pending(baseUrl + "/pago-pendiente")
-        .failure(baseUrl + "/pago-fallido")
-        .build();
+        // ==========================================
+        // 🔥 EL ARREGLO MAGICO: Limpiar la doble barra
+        // Si baseUrl termina en "/", se lo quitamos.
+        // ==========================================
+        String urlLimpia = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
 
-            // 3. Crear la petición de la preferencia
-           PreferenceRequest preferenceRequest = PreferenceRequest.builder()
-        .items(items)
-        .backUrls(backUrls) 
-        .autoReturn("approved") 
-        .externalReference(dniSocio)
-        .notificationUrl(baseUrl + "/api/pagos/webhook")
-        .build();
+        // 2. Configurar URLs de retorno usando urlLimpia
+        PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
+                .success(urlLimpia + "/pago-exitoso") 
+                .pending(urlLimpia + "/pago-pendiente")
+                .failure(urlLimpia + "/pago-fallido")
+                .build();
 
-            // 4. Comunicarse con la API de Mercado Pago
-            PreferenceClient client = new PreferenceClient();
-            Preference preference = client.create(preferenceRequest);
+        // 3. Crear la petición de la preferencia
+        PreferenceRequest preferenceRequest = PreferenceRequest.builder()
+                .items(items)
+                .backUrls(backUrls) 
+                .autoReturn("approved") 
+                .externalReference(dniSocio)
+                .notificationUrl(urlLimpia + "/api/pagos/webhook")
+                .build();
 
-            // 5. Devolver el link de pago (init_point)
-    
+        // 4. Comunicarse con la API de Mercado Pago
+        PreferenceClient client = new PreferenceClient();
+        Preference preference = client.create(preferenceRequest);
 
-            return preference.getInitPoint();
-        } catch (MPApiException apiException) {
-            // Este catch atrapa específicamente los rechazos de los servidores de Mercado Pago
-            System.err.println("❌ ERROR DETALLADO DE MERCADO PAGO:");
-            System.err.println("Status HTTP: " + apiException.getApiResponse().getStatusCode());
-            System.err.println("Cuerpo del error: " + apiException.getApiResponse().getContent());
-            
-            throw new RuntimeException("Error de MP: " + apiException.getMessage());
-            
-        } catch (Exception e) {
-            throw new RuntimeException("Error interno: " + e.getMessage());
-        }
+        // 5. Devolver el link de pago (init_point)
+        return preference.getInitPoint();
+
+    } catch (MPApiException apiException) {
+        System.err.println("❌ ERROR DETALLADO DE MERCADO PAGO:");
+        System.err.println("Status HTTP: " + apiException.getApiResponse().getStatusCode());
+        System.err.println("Cuerpo del error: " + apiException.getApiResponse().getContent());
+        throw new RuntimeException("Error de MP: " + apiException.getMessage());
+        
+    } catch (Exception e) {
+        throw new RuntimeException("Error interno: " + e.getMessage());
     }
+}
    public void verificarYAprobarPago(Long paymentId) {
         try {
             // 1. Instanciamos el cliente de pagos de Mercado Pago
