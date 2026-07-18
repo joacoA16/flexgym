@@ -117,11 +117,11 @@
             const token = localStorage.getItem("jwt_token");
             if (!token) {
                 alert("Sesión expirada. Por favor, inicia sesión.");
-                window.location.href = "login.html";
+                window.location.href = "index.html";
             }
         });
 
-       document.getElementById("formAgregarSocio").addEventListener("submit", async (e) => {
+  document.getElementById("formAgregarSocio").addEventListener("submit", async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("jwt_token");
     const btnGuardar = document.getElementById("btnGuardar");
@@ -130,24 +130,18 @@
     btnGuardar.disabled = true;
     btnGuardar.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Guardando...`;
 
-    // Calculamos la fecha de vencimiento (Hoy + 1 Mes)
-    const fechaVencimiento = new Date();
-    fechaVencimiento.setMonth(fechaVencimiento.getMonth() + 1);
-    const fechaFormateada = fechaVencimiento.toISOString().split('T')[0];
-
-    // Objeto limpio sin el campo password
+    // Ahora enviamos un objeto súper limpio, solo con textos. 
+    // ¡Adiós a los problemas de formato de fechas!
     const nuevoSocio = {
         dni: document.getElementById("dni").value,
         nombre: document.getElementById("nombre").value,
         apellido: document.getElementById("apellido").value,
         email: document.getElementById("email").value,
-        telefono: document.getElementById("telefono").value,
-        fechaVencimientoCuota: fechaFormateada 
+        telefono: document.getElementById("telefono").value
     };
 
     try {
-        // Apuntamos a la ruta exacta de tu controlador
-        const response = await fetch("/api/socios/registrar", { 
+        const response = await fetch("/api/socios/registrar", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -158,9 +152,8 @@
 
         if (response.ok) {
             alerta.innerHTML = `<div class="alert alert-success mt-3">✅ Socio registrado exitosamente.</div>`;
-            document.getElementById("formAgregarSocio").reset(); // Limpia el formulario
+            document.getElementById("formAgregarSocio").reset();
         } else {
-            // Si hay un error, intentamos leer el mensaje que manda el servidor
             const errorMsg = await response.text();
             alerta.innerHTML = `<div class="alert alert-danger mt-3">❌ Error: ${errorMsg}</div>`;
         }
@@ -173,7 +166,7 @@
 });
         function cerrarSesion() {
             localStorage.clear();
-            window.location.href = "login.html";
+            window.location.href = "index.html";
         }
 
         // --- LÓGICA DEL PRECIO (Misma que en los otros archivos) ---

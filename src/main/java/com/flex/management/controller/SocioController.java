@@ -1,5 +1,6 @@
 package com.flex.management.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.flex.management.DTO.RegistroSocioDTO;
 import com.flex.management.DTO.RutinaDto;
 import com.flex.management.entity.Socio;
 import com.flex.management.service.EmailService;
@@ -41,14 +43,26 @@ public class SocioController {
     }
 
     // Registrar un nuevo socio
-    @PostMapping("/registrar")
-    public ResponseEntity<Socio> registrarSocio(@RequestBody Socio socio) {
-        // Por defecto, al crearlo lo ideal es que inicie activo
-        socio.setActivo(true);
-        Socio nuevoSocio = socioService.guardarSocio(socio);
-        return ResponseEntity.ok(nuevoSocio);
-    }
+   @PostMapping("/registrar")
+public ResponseEntity<Socio> registrarSocio(@RequestBody RegistroSocioDTO dto) {
+    // 1. Creamos una instancia limpia de la entidad
+    Socio socio = new Socio();
+    
+    // 2. Mapeamos los datos seguros que vinieron del frontend
+    socio.setDni(dto.getDni()); 
+    socio.setNombre(dto.getNombre());
+    socio.setApellido(dto.getApellido());
+    socio.setTelefono(dto.getTelefono());
+    socio.setEmail(dto.getEmail());
 
+    // 3. Aplicamos las reglas de negocio en el servidor (¡Mucho más seguro!)
+    socio.setActivo(true);
+    socio.setFechaVencimientoCuota(LocalDate.now().plusMonths(1)); // Suma 1 mes exacto desde hoy
+
+    // 4. Guardamos en la base de datos
+    Socio nuevoSocio = socioService.guardarSocio(socio);
+    return ResponseEntity.ok(nuevoSocio);
+}
     // Enviar rutina por correo electrónico (Solo simulación por ahora)
  @PostMapping("/{dni}/rutina")
     public ResponseEntity<String> enviarRutina(@PathVariable String dni, @RequestBody RutinaDto rutinaDto) {
