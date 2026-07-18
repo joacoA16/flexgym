@@ -41,7 +41,7 @@ public class SocioController {
     }
 
     // Registrar un nuevo socio
-    @PostMapping
+    @PostMapping("/registrar")
     public ResponseEntity<Socio> registrarSocio(@RequestBody Socio socio) {
         // Por defecto, al crearlo lo ideal es que inicie activo
         socio.setActivo(true);

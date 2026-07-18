@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gimnasio - Agregar Socio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <!-- BARRA DE NAVEGACIÓN -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand"><i class="bi bi-shield-lock"></i> Panel Profe/Admin</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="buscar-socios.html"><i class="bi bi-search"></i> Buscador</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="panel-profe.html"><i class="bi bi-card-checklist"></i> Enviar Rutina</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="agregar-socio.html"><i class="bi bi-person-plus"></i> Nuevo Socio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalPrecio" onclick="cargarPrecioActual()">
+                            <i class="bi bi-currency-dollar"></i> Precio Cuota
+                        </a>
+                    </li>
+                </ul>
+                <button class="btn btn-outline-danger btn-sm" onclick="cerrarSesion()">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- FORMULARIO DE ALTA -->
+    <div class="container my-5" style="max-width: 600px;">
+        <div class="card shadow border-0">
+            <div class="card-header bg-success text-white py-3">
+                <h4 class="mb-0 text-center"><i class="bi bi-person-plus-fill"></i> Registrar Nuevo Socio</h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-info py-2 mb-4">
+                    <i class="bi bi-info-circle"></i> Al registrarse, se asume el pago de la primera cuota. El vencimiento se fijará automáticamente para dentro de 1 mes.
+                </div>
+
+                <form id="formAgregarSocio">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">DNI</label>
+                            <input type="number" id="dni" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Teléfono (WhatsApp)</label>
+                            <input type="text" id="telefono" class="form-control" placeholder="Ej: 5493415555555" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nombre</label>
+                            <input type="text" id="nombre" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Apellido</label>
+                            <input type="text" id="apellido" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Correo Electrónico</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Contraseña para el Socio</label>
+                            <input type="password" id="password" class="form-control" placeholder="Se recomienda usar su DNI por defecto" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success btn-lg" id="btnGuardar">
+                            <i class="bi bi-save"></i> Guardar y Habilitar Socio
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="alertaSocio" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE PRECIO (Para mantener la barra funcional) -->
+    <div class="modal fade" id="modalPrecio" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-tag"></i> Actualizar Precio de Cuota</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">$</span>
+                        <input type="number" id="inputPrecio" class="form-control form-control-lg">
+                    </div>
+                    <div id="alertaPrecio"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="guardarNuevoPrecio()">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("jwt_token");
+            if (!token) {
+                alert("Sesión expirada. Por favor, inicia sesión.");
+                window.location.href = "login.html";
+            }
+        });
+
+        document.getElementById("formAgregarSocio").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem("jwt_token");
+            const btnGuardar = document.getElementById("btnGuardar");
+            const alerta = document.getElementById("alertaSocio");
+
+            btnGuardar.disabled = true;
+            btnGuardar.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Guardando...`;
+
+            // Calculamos la fecha de vencimiento (Hoy + 1 Mes)
+            const fechaVencimiento = new Date();
+            fechaVencimiento.setMonth(fechaVencimiento.getMonth() + 1);
+            // Formateamos a YYYY-MM-DD para que Java (LocalDate) lo entienda
+            const fechaFormateada = fechaVencimiento.toISOString().split('T')[0];
+
+            const nuevoSocio = {
+                dni: document.getElementById("dni").value,
+                nombre: document.getElementById("nombre").value,
+                apellido: document.getElementById("apellido").value,
+                email: document.getElementById("email").value,
+                telefono: document.getElementById("telefono").value,
+                password: document.getElementById("password").value,
+                fechaVencimientoCuota: fechaFormateada // Aquí inyectamos el mes pagado
+            };
+
+            try {
+                // Asegúrate de que tu backend tenga un método POST en /api/socios
+                const response = await fetch("/api/socios/registrar", { // Ajusta esta ruta si tu registro es diferente (ej: /api/socios)
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(nuevoSocio)
+                });
+
+                if (response.ok) {
+                    alerta.innerHTML = `<div class="alert alert-success">✅ Socio registrado exitosamente. Ya puede iniciar sesión.</div>`;
+                    document.getElementById("formAgregarSocio").reset(); // Limpia el formulario
+                } else {
+                    const errorMsg = await response.text();
+                    alerta.innerHTML = `<div class="alert alert-danger">❌ Error: ${errorMsg}</div>`;
+                }
+            } catch (error) {
+                alerta.innerHTML = `<div class="alert alert-danger">❌ Error de conexión.</div>`;
+            } finally {
+                btnGuardar.disabled = false;
+                btnGuardar.innerHTML = `<i class="bi bi-save"></i> Guardar y Habilitar Socio`;
+            }
+        });
+
+        function cerrarSesion() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        // --- LÓGICA DEL PRECIO (Misma que en los otros archivos) ---
+        async function cargarPrecioActual() {
+            const token = localStorage.getItem("jwt_token");
+            try {
+                const response = await fetch("/api/configuracion/precio", { headers: { "Authorization": `Bearer ${token}` }});
+                if (response.ok) {
+                    const precio = await response.json();
+                    document.getElementById("inputPrecio").value = precio;
+                }
+            } catch (error) {}
+        }
+
+        async function guardarNuevoPrecio() {
+            const token = localStorage.getItem("jwt_token");
+            const nuevoPrecio = parseFloat(document.getElementById("inputPrecio").value);
+            const alerta = document.getElementById("alertaPrecio");
+            if (!nuevoPrecio || nuevoPrecio <= 0) return;
+            try {
+                const response = await fetch("/api/configuracion/precio", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                    body: JSON.stringify({ precio: nuevoPrecio })
+                });
+                if (response.ok) {
+                    alerta.innerHTML = `<div class="alert alert-success py-2">¡Precio actualizado!</div>`;
+                    setTimeout(() => { alerta.innerHTML = ""; bootstrap.Modal.getInstance(document.getElementById('modalPrecio')).hide(); }, 1500);
+                }
+            } catch (error) {}
+        }
+    </script>
+</body>
+</html>
