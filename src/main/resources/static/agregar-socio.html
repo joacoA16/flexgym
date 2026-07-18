@@ -51,40 +51,36 @@
                     <i class="bi bi-info-circle"></i> Al registrarse, se asume el pago de la primera cuota. El vencimiento se fijará automáticamente para dentro de 1 mes.
                 </div>
 
-                <form id="formAgregarSocio">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">DNI</label>
-                            <input type="number" id="dni" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Teléfono (WhatsApp)</label>
-                            <input type="text" id="telefono" class="form-control" placeholder="Ej: 5493415555555" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Nombre</label>
-                            <input type="text" id="nombre" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Apellido</label>
-                            <input type="text" id="apellido" class="form-control" required>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-bold">Correo Electrónico</label>
-                            <input type="email" id="email" class="form-control" required>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-bold">Contraseña para el Socio</label>
-                            <input type="password" id="password" class="form-control" placeholder="Se recomienda usar su DNI por defecto" required>
-                        </div>
-                    </div>
+               <form id="formAgregarSocio">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label fw-bold">DNI</label>
+            <input type="number" id="dni" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label fw-bold">Teléfono (WhatsApp)</label>
+            <input type="text" id="telefono" class="form-control" placeholder="Ej: 5493415555555" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label fw-bold">Nombre</label>
+            <input type="text" id="nombre" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label fw-bold">Apellido</label>
+            <input type="text" id="apellido" class="form-control" required>
+        </div>
+        <div class="col-12">
+            <label class="form-label fw-bold">Correo Electrónico</label>
+            <input type="email" id="email" class="form-control" required>
+        </div>
+    </div>
 
-                    <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-success btn-lg" id="btnGuardar">
-                            <i class="bi bi-save"></i> Guardar y Habilitar Socio
-                        </button>
-                    </div>
-                </form>
+    <div class="d-grid mt-4">
+        <button type="submit" class="btn btn-success btn-lg" id="btnGuardar">
+            <i class="bi bi-save"></i> Guardar y Habilitar Socio
+        </button>
+    </div>
+</form>
                 
                 <div id="alertaSocio" class="mt-3"></div>
             </div>
@@ -125,57 +121,56 @@
             }
         });
 
-        document.getElementById("formAgregarSocio").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const token = localStorage.getItem("jwt_token");
-            const btnGuardar = document.getElementById("btnGuardar");
-            const alerta = document.getElementById("alertaSocio");
+       document.getElementById("formAgregarSocio").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("jwt_token");
+    const btnGuardar = document.getElementById("btnGuardar");
+    const alerta = document.getElementById("alertaSocio");
 
-            btnGuardar.disabled = true;
-            btnGuardar.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Guardando...`;
+    btnGuardar.disabled = true;
+    btnGuardar.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Guardando...`;
 
-            // Calculamos la fecha de vencimiento (Hoy + 1 Mes)
-            const fechaVencimiento = new Date();
-            fechaVencimiento.setMonth(fechaVencimiento.getMonth() + 1);
-            // Formateamos a YYYY-MM-DD para que Java (LocalDate) lo entienda
-            const fechaFormateada = fechaVencimiento.toISOString().split('T')[0];
+    // Calculamos la fecha de vencimiento (Hoy + 1 Mes)
+    const fechaVencimiento = new Date();
+    fechaVencimiento.setMonth(fechaVencimiento.getMonth() + 1);
+    const fechaFormateada = fechaVencimiento.toISOString().split('T')[0];
 
-            const nuevoSocio = {
-                dni: document.getElementById("dni").value,
-                nombre: document.getElementById("nombre").value,
-                apellido: document.getElementById("apellido").value,
-                email: document.getElementById("email").value,
-                telefono: document.getElementById("telefono").value,
-                password: document.getElementById("password").value,
-                fechaVencimientoCuota: fechaFormateada // Aquí inyectamos el mes pagado
-            };
+    // Objeto limpio sin el campo password
+    const nuevoSocio = {
+        dni: document.getElementById("dni").value,
+        nombre: document.getElementById("nombre").value,
+        apellido: document.getElementById("apellido").value,
+        email: document.getElementById("email").value,
+        telefono: document.getElementById("telefono").value,
+        fechaVencimientoCuota: fechaFormateada 
+    };
 
-            try {
-                // Asegúrate de que tu backend tenga un método POST en /api/socios
-                const response = await fetch("/api/socios/registrar", { // Ajusta esta ruta si tu registro es diferente (ej: /api/socios)
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    },
-                    body: JSON.stringify(nuevoSocio)
-                });
-
-                if (response.ok) {
-                    alerta.innerHTML = `<div class="alert alert-success">✅ Socio registrado exitosamente. Ya puede iniciar sesión.</div>`;
-                    document.getElementById("formAgregarSocio").reset(); // Limpia el formulario
-                } else {
-                    const errorMsg = await response.text();
-                    alerta.innerHTML = `<div class="alert alert-danger">❌ Error: ${errorMsg}</div>`;
-                }
-            } catch (error) {
-                alerta.innerHTML = `<div class="alert alert-danger">❌ Error de conexión.</div>`;
-            } finally {
-                btnGuardar.disabled = false;
-                btnGuardar.innerHTML = `<i class="bi bi-save"></i> Guardar y Habilitar Socio`;
-            }
+    try {
+        // Apuntamos a la ruta exacta de tu controlador
+        const response = await fetch("/api/socios/registrar", { 
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(nuevoSocio)
         });
 
+        if (response.ok) {
+            alerta.innerHTML = `<div class="alert alert-success mt-3">✅ Socio registrado exitosamente.</div>`;
+            document.getElementById("formAgregarSocio").reset(); // Limpia el formulario
+        } else {
+            // Si hay un error, intentamos leer el mensaje que manda el servidor
+            const errorMsg = await response.text();
+            alerta.innerHTML = `<div class="alert alert-danger mt-3">❌ Error: ${errorMsg}</div>`;
+        }
+    } catch (error) {
+        alerta.innerHTML = `<div class="alert alert-danger mt-3">❌ Error de conexión con el servidor.</div>`;
+    } finally {
+        btnGuardar.disabled = false;
+        btnGuardar.innerHTML = `<i class="bi bi-save"></i> Guardar y Habilitar Socio`;
+    }
+});
         function cerrarSesion() {
             localStorage.clear();
             window.location.href = "login.html";
