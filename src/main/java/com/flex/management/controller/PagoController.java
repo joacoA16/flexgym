@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flex.management.entity.Pago;
@@ -20,7 +19,10 @@ import com.flex.management.service.MercadoPagoService;
 import com.flex.management.service.PagoService;
 import com.flex.management.service.SocioService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/pagos")
@@ -88,50 +90,53 @@ private final ConfiguracionService configuracionService;
         }
     }
 
-    @PostMapping("/webhook")
-    public ResponseEntity<Void> recibirNotificacionMercadoPago(
-            @RequestParam Map<String, String> queryParams,
-            @RequestBody(required = false) Map<String, Object> body) {
-            
-        System.out.println("\n========== 🔔 WEBHOOK RECIBIDO ==========");
-        System.out.println("Variables en la URL: " + queryParams);
-        System.out.println("Cuerpo del JSON: " + body);
+   @PostMapping("/webhook")
+public ResponseEntity<Void> recibirNotificacionMercadoPago(
+        HttpServletRequest request,
+        @RequestBody(required = false) String payload) { // Recibimos texto crudo, imposible que de 400
         
-        try {
-            Long paymentId = null;
-            
-            // 1. Buscamos el ID en la URL
-            if (queryParams.containsKey("data.id")) {
-                paymentId = Long.valueOf(queryParams.get("data.id"));
-            } else if (queryParams.containsKey("id")) {
-                String topic = queryParams.get("topic");
-                String type = queryParams.get("type");
-                if ("payment".equals(topic) || "payment".equals(type)) {
-                    paymentId = Long.valueOf(queryParams.get("id"));
-                }
-            }
-            
-            // 2. Si no vino en la URL, lo buscamos en el JSON
-            if (paymentId == null && body != null && body.containsKey("data")) {
-                Map<String, Object> data = (Map<String, Object>) body.get("data");
-                if (data.containsKey("id")) {
-                    paymentId = Long.valueOf(data.get("id").toString());
-                }
-            }
-            
-            // 3. Ejecutar la lógica si encontramos el ID
-            if (paymentId != null) {
-                System.out.println("▶ ¡Payment ID encontrado!: " + paymentId);
-                mercadoPagoService.verificarYAprobarPago(paymentId);
-            } else {
-                System.out.println("⚠️ Es una notificación de sistema (ej. merchant_order) o no tiene ID de pago. Se ignora.");
-            }
-            
-        } catch (Exception e) {
-             System.err.println("❌ Error procesando webhook: " + e.getMessage());
+    System.out.println("\n========== 🔔 WEBHOOK RECIBIDO ==========");
+    System.out.println("Query de la URL: " + request.getQueryString());
+    System.out.println("Payload Crudo: " + payload);
+    
+    try {
+        Long paymentId = null;
+        
+        // 1. Buscamos en la URL (Formato IPN)
+        String dataId = request.getParameter("data.id");
+        String paramId = request.getParameter("id");
+        String topic = request.getParameter("topic");
+        String type = request.getParameter("type");
+
+        if (dataId != null) {
+            paymentId = Long.valueOf(dataId);
+        } else if (paramId != null && ("payment".equals(topic) || "payment".equals(type))) {
+            paymentId = Long.valueOf(paramId);
         }
         
-        System.out.println("=========================================\n");
-        return ResponseEntity.ok().build();
+        // 2. Si no vino en la URL, leemos el JSON manualmente (Formato Webhook)
+        if (paymentId == null && payload != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(payload);
+            
+            if (node.has("data") && node.get("data").has("id")) {
+                paymentId = node.get("data").get("id").asLong();
+            }
+        }
+        
+        // 3. Procesamos el pago si encontramos el ID
+        if (paymentId != null) {
+            System.out.println("▶ ¡Payment ID encontrado!: " + paymentId);
+            mercadoPagoService.verificarYAprobarPago(paymentId);
+        } else {
+            System.out.println("⚠️ Notificación ignorada (no es un pago o no tiene ID).");
+        }
+        
+    } catch (Exception e) {
+         System.err.println("❌ Error interno procesando webhook: " + e.getMessage());
     }
+    
+    System.out.println("=========================================\n");
+    return ResponseEntity.ok().build(); // Siempre devuelve 200 para que MP deje de insistir
+}
 }
