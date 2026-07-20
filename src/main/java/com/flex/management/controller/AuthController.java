@@ -74,10 +74,7 @@ private final JwtUtil jwtUtil;
         }
 
         Socio socio = socioOptional.get();
-//revisar logica de acceso en caso de vencimiento
-        if (!socio.isActivo()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("El socio se encuentra inactivo");
-        }
+
 String token = jwtUtil.generateToken(socio.getDni(), "ROLE_SOCIO");
 
         Map<String, String> response = new HashMap<>();
