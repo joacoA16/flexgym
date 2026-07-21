@@ -100,7 +100,7 @@ public ResponseEntity<Socio> registrarSocio(@RequestBody RegistroSocioDTO dto) {
         
         return ResponseEntity.ok(datosPublicos);
     }
-    @PostMapping("/{dni}/whatsapp")
+  @PostMapping("/{dni}/whatsapp")
     public ResponseEntity<String> enviarRecordatorioWhatsApp(@PathVariable String dni) {
         Socio socio = socioService.buscarPorDni(dni);
         
@@ -108,8 +108,8 @@ public ResponseEntity<Socio> registrarSocio(@RequestBody RegistroSocioDTO dto) {
             return ResponseEntity.badRequest().body("El socio no tiene número de teléfono registrado.");
         }
 
-        // Llamamos al servicio pasando el número del socio y la plantilla de prueba
-        whatsAppService.enviarMensajeTemplate(socio.getTelefono(), "hello_world");
+        // 🔥 EL ARREGLO: Ponemos tu plantilla "recordatorio" y agregamos el nombre del socio al final
+        whatsAppService.enviarMensajeTemplate(socio.getTelefono(), "recordatorio", socio.getNombre());
         
         return ResponseEntity.ok("Notificación enviada por WhatsApp al número: " + socio.getTelefono());
     }

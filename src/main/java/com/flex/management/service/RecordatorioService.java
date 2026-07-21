@@ -17,12 +17,12 @@ import lombok.RequiredArgsConstructor;
 public class RecordatorioService {
 
     private final SocioRepository socioRepository;
-    private final WhatsAppService whatsAppService; // 1. Inyectamos a nuestro cartero
+    private final WhatsAppService whatsAppService;
 
     @Value("${whatsapp.api.template-name}")
     private String templateName;
 
-   
+  
     @Scheduled(cron = "0 20 16 * * ?")
     public void enviarRecordatoriosVencimiento() {
         LocalDate manana = LocalDate.now().plusDays(1);
@@ -33,13 +33,11 @@ public class RecordatorioService {
         for (Socio socio : sociosAVencer) {
             if (socio.isActivo() && socio.getTelefono() != null) {
                 
-                // 2. Le delegamos el trabajo pesado al WhatsAppService
-                whatsAppService.enviarMensajeTemplate(socio.getTelefono(), templateName);
+                // 🔥 EL ARREGLO ESTÁ AQUÍ: Ahora le pasamos el teléfono, la plantilla y el NOMBRE del socio
+                whatsAppService.enviarMensajeTemplate(socio.getTelefono(), templateName, socio.getNombre());
                 
                 System.out.println("Solicitud de WhatsApp delegada para: " + socio.getNombre());
             }
         }
     }
-    
-    
 }

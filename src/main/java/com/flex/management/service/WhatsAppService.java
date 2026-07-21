@@ -1,5 +1,7 @@
 package com.flex.management.service;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -22,19 +24,16 @@ public class WhatsAppService {
     @Value("${whatsapp.api.token}")
     private String accessToken;
 
-    public void enviarMensajeTemplate(String numeroDestino, String templateName) {
-        // Herramienta de Spring para hacer peticiones HTTP
+    // 1. Agregamos nombreSocio como tercer parámetro
+    public void enviarMensajeTemplate(String numeroDestino, String templateName, String nombreSocio) {
         RestTemplate restTemplate = new RestTemplate();
         
-        // URL final: https://graph.facebook.com/v18.0/TU_PHONE_ID/messages
         String url = apiUrl + "/" + phoneNumberId + "/messages";
 
-        // 1. Configuramos los Headers (Autorización y Tipo de contenido)
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(accessToken);
 
-        // 2. Construimos el cuerpo del JSON (Payload) para Meta
         Map<String, Object> body = new HashMap<>();
         body.put("messaging_product", "whatsapp");
         body.put("to", numeroDestino);
@@ -44,12 +43,34 @@ public class WhatsAppService {
         template.put("name", templateName); 
         
         Map<String, String> language = new HashMap<>();
-        language.put("code", "en_US"); // hello_world viene por defecto en en_US
+        language.put("code", "es_AR"); 
         template.put("language", language);
+
+        // ==========================================
+        // 2. SECCIÓN DE COMPONENTES (Variables)
+        // ==========================================
+        List<Map<String, Object>> components = new ArrayList<>();
+        
+        // Indicamos que la variable va en el cuerpo (body) del mensaje
+        Map<String, Object> bodyComponent = new HashMap<>();
+        bodyComponent.put("type", "body"); 
+
+        // Creamos la lista de parámetros (en este caso, solo uno)
+        List<Map<String, String>> parameters = new ArrayList<>();
+        Map<String, String> paramNombre = new HashMap<>();
+        paramNombre.put("type", "text");
+        paramNombre.put("text", nombreSocio); // Reemplaza {{1}} con el nombre
+        
+        parameters.add(paramNombre);
+        bodyComponent.put("parameters", parameters);
+        components.add(bodyComponent);
+        
+        // Enganchamos los componentes al template
+        template.put("components", components);
+        // ==========================================
 
         body.put("template", template);
 
-        // 3. Empaquetamos todo y enviamos la petición POST
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
 
         try {
