@@ -28,7 +28,7 @@ public class SecurityConfig {
                 
                 .requestMatchers("/pago-exitoso", "/pago-pendiente", "/pago-fallido").permitAll()
                 .requestMatchers("/error").permitAll()
-                .requestMatchers("/", "/*.html", "/*.css", "/*.js").permitAll()
+                .requestMatchers("/", "/*.html", "/*.css", "/*.js","/**/*.webp").permitAll()
                 .requestMatchers("/api/auth/**", "/pago-exitoso", "/pago-pendiente", "/pago-fallido", "/api/pagos/webhook","/api/whatsapp/webhook").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/socios/buscar").hasAnyRole("SOCIO", "ADMIN")
                 .requestMatchers("/api/pagos/mercado-pago/**").hasRole("SOCIO")
