@@ -3,15 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gimnasio - Buscador de Socios</title>
+    <title>Gym Flex - Buscador de Socios</title>
+    
+    <!-- Bootstrap CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <style>
+        /* Paleta de colores Dark Mode */
+        :root {
+            --gym-yellow: #fce300;
+            --gym-yellow-hover: #d9c300;
+            --bg-dark: #0a0a0a;
+            --card-bg: #141414;
+            --input-bg: #1f1f1f;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Roboto', sans-serif;
+            color: #ffffff;
+        }
+
+        h1, h2, h3, h4, h5, .navbar-brand {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+
+        /* Navbar personalizada */
+        .navbar {
+            background-color: var(--card-bg) !important;
+            border-bottom: 3px solid var(--gym-yellow);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-link.active {
+            color: var(--gym-yellow) !important;
+            font-weight: bold;
+        }
+
+        /* Tarjetas principales */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid #2a2a2a;
+            border-top: 4px solid var(--gym-yellow);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Inputs y Selects */
+        .form-control, .form-select {
+            background-color: var(--input-bg);
+            border: 1px solid #333;
+            color: #fff;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #252525;
+            border-color: var(--gym-yellow);
+            box-shadow: 0 0 0 0.25rem rgba(252, 227, 0, 0.25);
+            color: #fff;
+        }
+
+        .form-control::placeholder {
+            color: #666;
+        }
+
+        .input-group-text {
+            background-color: #333;
+            border: 1px solid #333;
+            color: var(--gym-yellow);
+        }
+
+        /* Flecha blanca para el select en modo oscuro */
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        }
+
+        /* Tabla oscura */
+        .table-dark {
+            background-color: var(--card-bg);
+            margin-bottom: 0;
+        }
+        
+        .table-dark th {
+            color: var(--gym-yellow);
+            border-bottom: 2px solid var(--gym-yellow);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .table-dark td {
+            background-color: #1a1a1a;
+            border-color: #333;
+            color: #eaeaea;
+        }
+
+        /* Modal oscuro */
+        .modal-content {
+            background-color: var(--card-bg);
+            border: 1px solid #333;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #333;
+        }
+
+        .modal-header .modal-title i {
+            color: var(--gym-yellow);
+        }
+
+        .modal-footer {
+            border-top: 1px solid #333;
+        }
+        
+        .btn-close-white {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        /* Botón Gym Principal */
+        .btn-gym {
+            background-color: var(--gym-yellow);
+            color: #000;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gym:hover {
+            background-color: var(--gym-yellow-hover);
+            color: #000;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
         <div class="container">
-            <span class="navbar-brand"><i class="bi bi-shield-lock"></i> Panel Profe/Admin</span>
+            <!-- Logo miniatura en la Navbar -->
+            <span class="navbar-brand d-flex align-items-center">
+                <img src="storiesdown.webp" alt="Logo" style="height: 35px; border-radius: 4px;" class="me-2">
+                Panel Admin
+            </span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -32,27 +176,27 @@
                         </a>
                     </li>
                 </ul>
-                <button class="btn btn-outline-danger btn-sm" onclick="cerrarSesion()">
-                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                <button class="btn btn-outline-danger btn-sm fw-bold" onclick="cerrarSesion()">
+                    <i class="bi bi-box-arrow-right"></i> Salir
                 </button>
             </div>
         </div>
     </nav>
 
-    <div class="container">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
-                <h3 class="mb-4 text-primary"><i class="bi bi-people-fill"></i> Directorio de Socios</h3>
+    <div class="container my-5">
+        <div class="card shadow-lg">
+            <div class="card-body p-4 p-md-5">
+                <h3 class="mb-4 text-white"><i class="bi bi-people-fill me-2" style="color: var(--gym-yellow);"></i> Directorio de Socios</h3>
 
                 <div class="row g-3 mb-4">
                     <div class="col-md-8">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                            <input type="text" id="searchInput" class="form-control" placeholder="Buscar por Nombre, Apellido o DNI...">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" id="searchInput" class="form-control" placeholder="Buscar por Nombre, Apellido o DNI..." autocomplete="off">
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <select id="statusFilter" class="form-select">
+                        <select id="statusFilter" class="form-select form-select-lg">
                             <option value="todos">Todos los Estados</option>
                             <option value="activa">Cuota Al Día</option>
                             <option value="vencida">Cuota Vencida</option>
@@ -60,9 +204,10 @@
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
+                <div class="table-responsive border border-secondary rounded">
+                    <!-- Cambiado a table-dark para fondo oscuro -->
+                    <table class="table table-dark table-hover align-middle mb-0">
+                        <thead>
                             <tr>
                                 <th>DNI</th>
                                 <th>Socio</th>
@@ -73,7 +218,7 @@
                             </tr>
                         </thead>
                         <tbody id="tablaSocios">
-                            <tr><td colspan="6" class="text-center text-muted">Cargando socios...</td></tr>
+                            <tr><td colspan="6" class="text-center text-secondary py-4">Cargando socios...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -82,31 +227,31 @@
         </div>
     </div>
 
-    <!-- NUEVO: Modal de Precio Cuota -->
+    <!-- Modal de Precio Cuota (Adaptado) -->
     <div class="modal fade" id="modalPrecio" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title"><i class="bi bi-tag"></i> Actualizar Precio de Cuota</h5>
+            <div class="modal-content shadow-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-tag-fill me-2"></i> Actualizar Precio de Cuota</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <p class="text-muted">Este será el valor global que se cobrará en Mercado Pago y Efectivo.</p>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">$</span>
-                        <input type="number" id="inputPrecio" class="form-control form-control-lg" placeholder="Cargando...">
+                <div class="modal-body p-4">
+                    <p class="text-secondary mb-4">Este será el valor global que se cobrará en Mercado Pago y Efectivo.</p>
+                    <div class="input-group input-group-lg mb-3">
+                        <span class="input-group-text fw-bold">$</span>
+                        <input type="number" id="inputPrecio" class="form-control" placeholder="Cargando...">
                     </div>
                     <div id="alertaPrecio"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success" onclick="guardarNuevoPrecio()">Guardar Cambios</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-gym px-4" onclick="guardarNuevoPrecio()">Guardar Cambios</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- NUEVO: Script de Bootstrap (Requerido para que el modal se abra) -->
+    <!-- Script de Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
@@ -117,7 +262,7 @@
             const token = localStorage.getItem("jwt_token");
             if (!token) {
                 alert("Sesión expirada. Por favor, inicia sesión.");
-                window.location.href = "index.html"; // Ajustado para que vaya a index.html
+                window.location.href = "index.html"; 
                 return;
             }
             await cargarSocios(token);
@@ -137,10 +282,10 @@
                     todosLosSocios = await response.json();
                     aplicarFiltros(); 
                 } else {
-                    document.getElementById("tablaSocios").innerHTML = `<tr><td colspan="6" class="text-danger text-center">Error al obtener los datos.</td></tr>`;
+                    document.getElementById("tablaSocios").innerHTML = `<tr><td colspan="6" class="text-danger text-center py-4">Error al obtener los datos.</td></tr>`;
                 }
             } catch (error) {
-                document.getElementById("tablaSocios").innerHTML = `<tr><td colspan="6" class="text-danger text-center">Error de conexión con el servidor.</td></tr>`;
+                document.getElementById("tablaSocios").innerHTML = `<tr><td colspan="6" class="text-danger text-center py-4">Error de conexión con el servidor.</td></tr>`;
             }
         }
 
@@ -150,7 +295,7 @@
             tbody.innerHTML = "";
 
             if (socios.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No se encontraron socios que coincidan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-secondary py-4">No se encontraron socios que coincidan.</td></tr>`;
                 return;
             }
 
@@ -162,18 +307,21 @@
 
                 const fechaLegible = fechaVencimiento.toLocaleDateString('es-AR');
 
+                // Ajuste visual de los badges para Dark Mode
                 const badgeEstado = estaVencida 
-                    ? '<span class="badge bg-danger">Vencida</span>' 
-                    : '<span class="badge bg-success">Al Día</span>';
+                    ? '<span class="badge bg-danger px-2 py-1">Vencida</span>' 
+                    : '<span class="badge bg-success px-2 py-1">Al Día</span>';
 
+                // Botones ajustados: verde para cobrar, outline gris para pagado
                 const botonCobrar = estaVencida
-                    ? `<button class="btn btn-success btn-sm" onclick="registrarPagoEfectivo('${socio.dni}', '${socio.nombre}')"><i class="bi bi-cash"></i> Cobrar</button>`
-                    : `<button class="btn btn-secondary btn-sm" disabled><i class="bi bi-check2-all"></i> Pagado</button>`;
+                    ? `<button class="btn btn-success btn-sm fw-bold px-3" onclick="registrarPagoEfectivo('${socio.dni}', '${socio.nombre}')"><i class="bi bi-cash-stack me-1"></i> Cobrar</button>`
+                    : `<button class="btn btn-outline-secondary btn-sm px-3" disabled><i class="bi bi-check2-all me-1"></i> Pagado</button>`;
 
                 const tr = document.createElement("tr");
+                // Cambiado text-secondary por color personalizado o blanco para mejor lectura
                 tr.innerHTML = `
-                    <td class="fw-bold text-secondary">${socio.dni}</td>
-                    <td>${socio.nombre} ${socio.apellido}</td>
+                    <td class="fw-bold" style="color: var(--gym-yellow);">${socio.dni}</td>
+                    <td class="fw-medium">${socio.nombre} ${socio.apellido}</td>
                     <td>${socio.telefono || '-'}</td>
                     <td>${fechaLegible}</td>
                     <td>${badgeEstado}</td>
@@ -242,12 +390,10 @@
         // 7. Función para cerrar sesión
         function cerrarSesion() {
             localStorage.clear();
-            window.location.href = "index.html"; // Ajustado a index.html para evitar el error blanco
+            window.location.href = "index.html"; 
         }
 
-        // ==========================================
-        // NUEVO: Funciones para el Modal de Precio
-        // ==========================================
+        // Funciones para el Modal de Precio
         async function cargarPrecioActual() {
             const token = localStorage.getItem("jwt_token");
             try {
@@ -269,7 +415,7 @@
             const alerta = document.getElementById("alertaPrecio");
 
             if (!nuevoPrecio || nuevoPrecio <= 0) {
-                alerta.innerHTML = `<div class="alert alert-warning py-2">Ingresa un valor válido.</div>`;
+                alerta.innerHTML = `<div class="alert bg-warning text-dark border-0 py-2 mt-3">Ingresa un valor válido.</div>`;
                 return;
             }
 
@@ -284,17 +430,17 @@
                 });
 
                 if (response.ok) {
-                    alerta.innerHTML = `<div class="alert alert-success py-2">¡Precio actualizado con éxito!</div>`;
+                    alerta.innerHTML = `<div class="alert bg-success text-white border-0 py-2 mt-3">¡Precio actualizado con éxito!</div>`;
                     setTimeout(() => {
                         alerta.innerHTML = "";
                         const modal = bootstrap.Modal.getInstance(document.getElementById('modalPrecio'));
                         modal.hide();
                     }, 1500);
                 } else {
-                    alerta.innerHTML = `<div class="alert alert-danger py-2">Error al guardar.</div>`;
+                    alerta.innerHTML = `<div class="alert bg-danger text-white border-0 py-2 mt-3">Error al guardar.</div>`;
                 }
             } catch (error) {
-                alerta.innerHTML = `<div class="alert alert-danger py-2">Error de conexión.</div>`;
+                alerta.innerHTML = `<div class="alert bg-danger text-white border-0 py-2 mt-3">Error de conexión.</div>`;
             }
         }
     </script>

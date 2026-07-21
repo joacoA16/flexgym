@@ -3,15 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gimnasio - Panel Profesor</title>
+    <title>Gym Flex - Panel Profesor</title>
+    
+    <!-- Bootstrap CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <style>
+        /* Paleta de colores Dark Mode */
+        :root {
+            --gym-yellow: #fce300;
+            --gym-yellow-hover: #d9c300;
+            --bg-dark: #0a0a0a;
+            --card-bg: #141414;
+            --input-bg: #1f1f1f;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Roboto', sans-serif;
+            color: #ffffff;
+        }
+
+        h1, h2, h3, h4, h5, .navbar-brand {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+
+        /* Navbar personalizada */
+        .navbar {
+            background-color: var(--card-bg) !important;
+            border-bottom: 3px solid var(--gym-yellow);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-link.active {
+            color: var(--gym-yellow) !important;
+            font-weight: bold;
+        }
+
+        /* Tarjetas principales */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid #2a2a2a;
+            border-top: 4px solid var(--gym-yellow);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        /* Inputs y Selects */
+        .form-label {
+            color: #aaaaaa;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-text {
+            color: #777 !important;
+        }
+
+        .form-control, .form-select {
+            background-color: var(--input-bg);
+            border: 1px solid #333;
+            color: #fff;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #252525;
+            border-color: var(--gym-yellow);
+            box-shadow: 0 0 0 0.25rem rgba(252, 227, 0, 0.25);
+            color: #fff;
+        }
+
+        .form-control::placeholder {
+            color: #666;
+        }
+
+        /* Tabla oscura */
+        .table-dark {
+            background-color: var(--card-bg);
+        }
+        
+        .table-dark th {
+            color: var(--gym-yellow);
+            border-bottom: 2px solid var(--gym-yellow);
+        }
+        
+        .table-dark td {
+            background-color: #1a1a1a;
+            border-color: #333;
+        }
+
+        /* Botones */
+        .btn-gym {
+            background-color: var(--gym-yellow);
+            color: #000;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gym:hover {
+            background-color: var(--gym-yellow-hover);
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(252, 227, 0, 0.3);
+        }
+
+        /* Modal oscuro */
+        .modal-content {
+            background-color: var(--card-bg);
+            border: 1px solid #333;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #333;
+        }
+
+        .modal-header .modal-title i {
+            color: var(--gym-yellow);
+        }
+
+        .modal-footer {
+            border-top: 1px solid #333;
+        }
+
+        .input-group-text {
+            background-color: #333;
+            border: 1px solid #333;
+            color: var(--gym-yellow);
+            font-weight: bold;
+        }
+        
+        .btn-close-white {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
         <div class="container">
-            <span class="navbar-brand"><i class="bi bi-shield-lock"></i> Panel Profe/Admin</span>
+            <!-- Agregué el logo miniatura en la Navbar -->
+            <span class="navbar-brand d-flex align-items-center">
+                <img src="storiesdown.webp" alt="Logo" style="height: 35px; border-radius: 4px;" class="me-2">
+                Panel Admin
+            </span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -32,85 +185,89 @@
                         </a>
                     </li>
                 </ul>
-                <button class="btn btn-outline-danger btn-sm" onclick="cerrarSesion()">
-                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                <button class="btn btn-outline-danger btn-sm fw-bold" onclick="cerrarSesion()">
+                    <i class="bi bi-box-arrow-right"></i> Salir
                 </button>
             </div>
         </div>
     </nav>
 
-    <div class="container my-5" style="max-width: 800px;">
+    <div class="container my-5" style="max-width: 900px;">
         <div class="card shadow">
-            <div class="card-header bg-primary text-white py-3">
-                <h3 class="mb-0 text-center"><i class="bi bi-activity"></i> Panel del Profesor: Nueva Rutina</h3>
+            <div class="card-header py-3">
+                <h3 class="mb-0 text-center"><i class="bi bi-activity" style="color: var(--gym-yellow);"></i> Nueva Rutina</h3>
             </div>
             <div class="card-body p-4">
 
                 <form id="rutinaForm">
                     <div class="row g-3 mb-4">
-                     <div class="col-md-6">
-                            <label for="dniSocio" class="form-label fw-bold">DNI del/los Socio/s:</label>
-                            <input type="text" id="dniSocio" class="form-control" placeholder="Ej: 40123456, 39123123, 41000000" required>
-                            <div class="form-text">Separa los DNIs con comas para envíos múltiples.</div>
+                        <div class="col-md-6">
+                            <label for="dniSocio" class="form-label fw-bold">DNI del/los Socio/s</label>
+                            <input type="text" id="dniSocio" class="form-control" placeholder="Ej: 40123456, 39123123" required autocomplete="off">
+                            <div class="form-text mt-1"><i class="bi bi-info-circle"></i> Separa los DNIs con comas.</div>
                         </div>
                         <div class="col-md-6">
-                            <label for="nombreRutina" class="form-label fw-bold">Nombre de la Rutina:</label>
-                            <input type="text" id="nombreRutina" class="form-control" placeholder="Ej: Rutina de Fuerza A" required>
+                            <label for="nombreRutina" class="form-label fw-bold">Nombre de la Rutina</label>
+                            <input type="text" id="nombreRutina" class="form-control" placeholder="Ej: Fuerza Pecho / Tríceps" required autocomplete="off">
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0 fw-bold text-secondary">Ejercicios de la Rutina</h5>
-                        <button type="button" class="btn btn-success btn-sm" onclick="agregarFilaEjercicio()">
-                            <i class="bi bi-plus-circle"></i> Agregar Ejercicio
+                    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
+                        <h5 class="mb-0 text-white">Ejercicios</h5>
+                        <button type="button" class="btn btn-outline-warning btn-sm" onclick="agregarFilaEjercicio()">
+                            <i class="bi bi-plus-lg"></i> Agregar Ejercicio
                         </button>
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered align-middle" id="tablaEjercicios">
-                            <thead class="table-dark">
+                        <!-- Añadida la clase table-dark para estilizar el interior -->
+                        <table class="table table-dark table-bordered align-middle mb-0" id="tablaEjercicios">
+                            <thead>
                                 <tr>
                                     <th style="width: 50%;">Nombre del Ejercicio</th>
                                     <th style="width: 20%;" class="text-center">Series</th>
-                                    <th style="width: 20%;" class="text-center">Repeticiones</th>
+                                    <th style="width: 20%;" class="text-center">Reps</th>
                                     <th style="width: 10%;" class="text-center">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="cuerpoTabla">
-                                </tbody>
+                                <!-- Las filas se insertan aquí vía JS -->
+                            </tbody>
                         </table>
                     </div>
 
-                    <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-send"></i> Enviar Rutina por Correo
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-gym py-3">
+                            <i class="bi bi-send-fill me-2"></i> Enviar Rutina
                         </button>
                     </div>
                 </form>
 
-                <div id="alertContainer" class="mt-3"></div>
+                <div id="alertContainer" class="mt-4"></div>
 
             </div>
         </div>
     </div>
+
+    <!-- Modal Precio -->
     <div class="modal fade" id="modalPrecio" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title"><i class="bi bi-tag"></i> Actualizar Precio de Cuota</h5>
+            <div class="modal-content shadow-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-tag-fill me-2"></i> Actualizar Precio de Cuota</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <p class="text-muted">Este será el valor global que se cobrará en Mercado Pago y Efectivo.</p>
-                    <div class="input-group mb-3">
+                <div class="modal-body p-4">
+                    <p class="text-secondary mb-4">Este será el valor global que se cobrará en Mercado Pago y Efectivo.</p>
+                    <div class="input-group input-group-lg mb-3">
                         <span class="input-group-text">$</span>
-                        <input type="number" id="inputPrecio" class="form-control form-control-lg" placeholder="Cargando...">
+                        <input type="number" id="inputPrecio" class="form-control" placeholder="Cargando...">
                     </div>
                     <div id="alertaPrecio"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success" onclick="guardarNuevoPrecio()">Guardar Cambios</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-gym px-4" onclick="guardarNuevoPrecio()">Guardar Cambios</button>
                 </div>
             </div>
         </div>
@@ -151,7 +308,7 @@
                 </td>
                 <td class="text-center">
                     <button type="button" class="btn btn-outline-danger btn-sm" onclick="eliminarFila(this)">
-                        <i class="bi bi-trash"></i>
+                        <i class="bi bi-trash-fill"></i>
                     </button>
                 </td>
             `;
@@ -168,8 +325,7 @@
             }
         }
 
-        // Interceptamos el envío del formulario
-      // Interceptamos el envío del formulario para envíos múltiples
+        // Interceptamos el envío del formulario para envíos múltiples
         document.getElementById("rutinaForm").addEventListener("submit", async (event) => {
             event.preventDefault(); // Evitamos que la página se recargue
 
@@ -187,7 +343,6 @@
             }
 
             // 1. Limpiamos y separamos los DNIs ingresados por coma
-            // Ej: " 40123456 , 39111222" -> ["40123456", "39111222"]
             const listaDnis = dnisInput.split(',')
                                        .map(dni => dni.trim())
                                        .filter(dni => dni !== "");
@@ -254,10 +409,8 @@
                     document.getElementById("cuerpoTabla").innerHTML = "";
                     agregarFilaEjercicio();
                 } else if (exitos > 0) {
-                    // Algunos funcionaron y otros fallaron
                     mostrarAlerta(`⚠️ Se envió a ${exitos} socios, pero hubo errores:<br>• ${mensajesError.join('<br>• ')}`, "warning");
                 } else {
-                    // Todos fallaron
                     mostrarAlerta(`❌ Error en todos los envíos:<br>• ${mensajesError.join('<br>• ')}`, "danger");
                 }
 
@@ -275,13 +428,17 @@
         // Función auxiliar para mostrar alertas
         function mostrarAlerta(mensaje, tipo) {
             const container = document.getElementById("alertContainer");
+            // Usamos colores de fondo sólidos (sin bordes) para que destaquen mejor en modo oscuro
+            const bgClass = tipo === 'warning' ? 'bg-warning text-dark' : (tipo === 'info' ? 'bg-info text-dark' : `bg-${tipo} text-white`);
+            
             container.innerHTML = `
-                <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
+                <div class="alert ${bgClass} alert-dismissible fade show border-0 shadow-sm" role="alert">
                     ${mensaje}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close ${tipo === 'warning' || tipo === 'info' ? '' : 'btn-close-white'}" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             `;
         }
+        
         async function cargarPrecioActual() {
             const token = localStorage.getItem("jwt_token");
             try {
@@ -303,7 +460,7 @@
             const alerta = document.getElementById("alertaPrecio");
 
             if (!nuevoPrecio || nuevoPrecio <= 0) {
-                alerta.innerHTML = `<div class="alert alert-warning py-2">Ingresa un valor válido.</div>`;
+                alerta.innerHTML = `<div class="alert bg-warning text-dark border-0 py-2 mt-3">Ingresa un valor válido.</div>`;
                 return;
             }
 
@@ -318,17 +475,17 @@
                 });
 
                 if (response.ok) {
-                    alerta.innerHTML = `<div class="alert alert-success py-2">¡Precio actualizado con éxito!</div>`;
+                    alerta.innerHTML = `<div class="alert bg-success text-white border-0 py-2 mt-3">¡Precio actualizado con éxito!</div>`;
                     setTimeout(() => {
                         alerta.innerHTML = "";
                         const modal = bootstrap.Modal.getInstance(document.getElementById('modalPrecio'));
                         modal.hide();
                     }, 1500);
                 } else {
-                    alerta.innerHTML = `<div class="alert alert-danger py-2">Error al guardar.</div>`;
+                    alerta.innerHTML = `<div class="alert bg-danger text-white border-0 py-2 mt-3">Error al guardar.</div>`;
                 }
             } catch (error) {
-                alerta.innerHTML = `<div class="alert alert-danger py-2">Error de conexión.</div>`;
+                alerta.innerHTML = `<div class="alert bg-danger text-white border-0 py-2 mt-3">Error de conexión.</div>`;
             }
         }
     </script>

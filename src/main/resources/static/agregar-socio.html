@@ -3,16 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gimnasio - Agregar Socio</title>
+    <title>Gym Flex - Agregar Socio</title>
+    
+    <!-- Bootstrap CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Paleta de colores Dark Mode */
+        :root {
+            --gym-yellow: #fce300;
+            --gym-yellow-hover: #d9c300;
+            --bg-dark: #0a0a0a;
+            --card-bg: #141414;
+            --input-bg: #1f1f1f;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Roboto', sans-serif;
+            color: #ffffff;
+        }
+
+        h1, h2, h3, h4, h5, .navbar-brand {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+
+        /* Navbar personalizada */
+        .navbar {
+            background-color: var(--card-bg) !important;
+            border-bottom: 3px solid var(--gym-yellow);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-link.active {
+            color: var(--gym-yellow) !important;
+            font-weight: bold;
+        }
+
+        /* Tarjetas principales */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid #2a2a2a;
+            border-top: 4px solid var(--gym-yellow);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .card-header {
+            background-color: transparent !important;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        /* Inputs y Selects */
+        .form-label {
+            color: #aaaaaa;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            background-color: var(--input-bg);
+            border: 1px solid #333;
+            color: #fff;
+        }
+
+        .form-control:focus {
+            background-color: #252525;
+            border-color: var(--gym-yellow);
+            box-shadow: 0 0 0 0.25rem rgba(252, 227, 0, 0.25);
+            color: #fff;
+        }
+
+        .form-control::placeholder {
+            color: #666;
+        }
+
+        .input-group-text {
+            background-color: #333;
+            border: 1px solid #333;
+            color: var(--gym-yellow);
+            font-weight: bold;
+        }
+
+        /* Modal oscuro */
+        .modal-content {
+            background-color: var(--card-bg);
+            border: 1px solid #333;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #333;
+        }
+
+        .modal-header .modal-title i {
+            color: var(--gym-yellow);
+        }
+
+        .modal-footer {
+            border-top: 1px solid #333;
+        }
+        
+        .btn-close-white {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        /* Botón Gym Principal */
+        .btn-gym {
+            background-color: var(--gym-yellow);
+            color: #000;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gym:hover {
+            background-color: var(--gym-yellow-hover);
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(252, 227, 0, 0.3);
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
     <!-- BARRA DE NAVEGACIÓN -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
         <div class="container">
-            <span class="navbar-brand"><i class="bi bi-shield-lock"></i> Panel Profe/Admin</span>
+            <span class="navbar-brand d-flex align-items-center">
+                <img src="storiesdown.webp" alt="Logo" style="height: 35px; border-radius: 4px;" class="me-2">
+                Panel Admin
+            </span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -33,78 +165,80 @@
                         </a>
                     </li>
                 </ul>
-                <button class="btn btn-outline-danger btn-sm" onclick="cerrarSesion()">
-                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                <button class="btn btn-outline-danger btn-sm fw-bold" onclick="cerrarSesion()">
+                    <i class="bi bi-box-arrow-right"></i> Salir
                 </button>
             </div>
         </div>
     </nav>
 
     <!-- FORMULARIO DE ALTA -->
-    <div class="container my-5" style="max-width: 600px;">
-        <div class="card shadow border-0">
-            <div class="card-header bg-success text-white py-3">
-                <h4 class="mb-0 text-center"><i class="bi bi-person-plus-fill"></i> Registrar Nuevo Socio</h4>
+    <div class="container my-5" style="max-width: 650px;">
+        <div class="card shadow-lg border-0">
+            <div class="card-header py-4">
+                <h3 class="mb-0 text-center"><i class="bi bi-person-plus-fill me-2" style="color: var(--gym-yellow);"></i> Registrar Nuevo Socio</h3>
             </div>
-            <div class="card-body p-4">
-                <div class="alert alert-info py-2 mb-4">
-                    <i class="bi bi-info-circle"></i> Al registrarse, se asume el pago de la primera cuota. El vencimiento se fijará automáticamente para dentro de 1 mes.
+            <div class="card-body p-4 p-md-5">
+                
+                <div class="alert bg-info text-dark border-0 py-3 mb-4 shadow-sm fw-medium">
+                    <i class="bi bi-info-circle-fill me-2"></i> Al registrarse, se asume el pago de la primera cuota. El vencimiento se fijará automáticamente para dentro de 1 mes.
                 </div>
 
                <form id="formAgregarSocio">
-    <div class="row g-3">
-        <div class="col-md-6">
-            <label class="form-label fw-bold">DNI</label>
-            <input type="number" id="dni" class="form-control" required>
-        </div>
-        <div class="col-md-6">
-            <label class="form-label fw-bold">Teléfono (WhatsApp)</label>
-            <input type="text" id="telefono" class="form-control" placeholder="Ej: 5493415555555" required>
-        </div>
-        <div class="col-md-6">
-            <label class="form-label fw-bold">Nombre</label>
-            <input type="text" id="nombre" class="form-control" required>
-        </div>
-        <div class="col-md-6">
-            <label class="form-label fw-bold">Apellido</label>
-            <input type="text" id="apellido" class="form-control" required>
-        </div>
-        <div class="col-12">
-            <label class="form-label fw-bold">Correo Electrónico</label>
-            <input type="email" id="email" class="form-control" required>
-        </div>
-    </div>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">DNI</label>
+                            <input type="number" id="dni" class="form-control form-control-lg" required autocomplete="off">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Teléfono (WhatsApp)</label>
+                            <input type="text" id="telefono" class="form-control form-control-lg" placeholder="Ej: 5493415555555" required autocomplete="off">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nombre</label>
+                            <input type="text" id="nombre" class="form-control form-control-lg" required autocomplete="off">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Apellido</label>
+                            <input type="text" id="apellido" class="form-control form-control-lg" required autocomplete="off">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Correo Electrónico</label>
+                            <input type="email" id="email" class="form-control form-control-lg" required autocomplete="off">
+                        </div>
+                    </div>
 
-    <div class="d-grid mt-4">
-        <button type="submit" class="btn btn-success btn-lg" id="btnGuardar">
-            <i class="bi bi-save"></i> Guardar y Habilitar Socio
-        </button>
-    </div>
-</form>
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-gym btn-lg py-3" id="btnGuardar">
+                            <i class="bi bi-save2-fill me-2"></i> Guardar y Habilitar Socio
+                        </button>
+                    </div>
+                </form>
                 
-                <div id="alertaSocio" class="mt-3"></div>
+                <div id="alertaSocio" class="mt-4"></div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE PRECIO (Para mantener la barra funcional) -->
+    <!-- MODAL DE PRECIO -->
     <div class="modal fade" id="modalPrecio" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title"><i class="bi bi-tag"></i> Actualizar Precio de Cuota</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-content shadow-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-tag-fill me-2"></i> Actualizar Precio de Cuota</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="input-group mb-3">
+                <div class="modal-body p-4">
+                    <p class="text-secondary mb-4">Este será el valor global que se cobrará en Mercado Pago y Efectivo.</p>
+                    <div class="input-group input-group-lg mb-3">
                         <span class="input-group-text">$</span>
-                        <input type="number" id="inputPrecio" class="form-control form-control-lg">
+                        <input type="number" id="inputPrecio" class="form-control" placeholder="Cargando...">
                     </div>
                     <div id="alertaPrecio"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success" onclick="guardarNuevoPrecio()">Guardar Cambios</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-gym px-4" onclick="guardarNuevoPrecio()">Guardar Cambios</button>
                 </div>
             </div>
         </div>
@@ -121,55 +255,56 @@
             }
         });
 
-  document.getElementById("formAgregarSocio").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem("jwt_token");
-    const btnGuardar = document.getElementById("btnGuardar");
-    const alerta = document.getElementById("alertaSocio");
+        document.getElementById("formAgregarSocio").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem("jwt_token");
+            const btnGuardar = document.getElementById("btnGuardar");
+            const alerta = document.getElementById("alertaSocio");
 
-    btnGuardar.disabled = true;
-    btnGuardar.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Guardando...`;
+            btnGuardar.disabled = true;
+            btnGuardar.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Guardando...`;
 
-    // Ahora enviamos un objeto súper limpio, solo con textos. 
-    // ¡Adiós a los problemas de formato de fechas!
-    const nuevoSocio = {
-        dni: document.getElementById("dni").value,
-        nombre: document.getElementById("nombre").value,
-        apellido: document.getElementById("apellido").value,
-        email: document.getElementById("email").value,
-        telefono: document.getElementById("telefono").value
-    };
+            // Ahora enviamos un objeto súper limpio, solo con textos. 
+            // ¡Adiós a los problemas de formato de fechas!
+            const nuevoSocio = {
+                dni: document.getElementById("dni").value,
+                nombre: document.getElementById("nombre").value,
+                apellido: document.getElementById("apellido").value,
+                email: document.getElementById("email").value,
+                telefono: document.getElementById("telefono").value
+            };
 
-    try {
-        const response = await fetch("/api/socios/registrar", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(nuevoSocio)
+            try {
+                const response = await fetch("/api/socios/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(nuevoSocio)
+                });
+
+                if (response.ok) {
+                    alerta.innerHTML = `<div class="alert bg-success text-white border-0 shadow-sm mt-3"><i class="bi bi-check-circle-fill me-2"></i> Socio registrado exitosamente.</div>`;
+                    document.getElementById("formAgregarSocio").reset();
+                } else {
+                    const errorMsg = await response.text();
+                    alerta.innerHTML = `<div class="alert bg-danger text-white border-0 shadow-sm mt-3"><i class="bi bi-exclamation-triangle-fill me-2"></i> Error: ${errorMsg}</div>`;
+                }
+            } catch (error) {
+                alerta.innerHTML = `<div class="alert bg-danger text-white border-0 shadow-sm mt-3"><i class="bi bi-wifi-off me-2"></i> Error de conexión con el servidor.</div>`;
+            } finally {
+                btnGuardar.disabled = false;
+                btnGuardar.innerHTML = `<i class="bi bi-save2-fill me-2"></i> Guardar y Habilitar Socio`;
+            }
         });
 
-        if (response.ok) {
-            alerta.innerHTML = `<div class="alert alert-success mt-3">✅ Socio registrado exitosamente.</div>`;
-            document.getElementById("formAgregarSocio").reset();
-        } else {
-            const errorMsg = await response.text();
-            alerta.innerHTML = `<div class="alert alert-danger mt-3">❌ Error: ${errorMsg}</div>`;
-        }
-    } catch (error) {
-        alerta.innerHTML = `<div class="alert alert-danger mt-3">❌ Error de conexión con el servidor.</div>`;
-    } finally {
-        btnGuardar.disabled = false;
-        btnGuardar.innerHTML = `<i class="bi bi-save"></i> Guardar y Habilitar Socio`;
-    }
-});
         function cerrarSesion() {
             localStorage.clear();
             window.location.href = "index.html";
         }
 
-        // --- LÓGICA DEL PRECIO (Misma que en los otros archivos) ---
+        // --- LÓGICA DEL PRECIO ---
         async function cargarPrecioActual() {
             const token = localStorage.getItem("jwt_token");
             try {
@@ -185,7 +320,10 @@
             const token = localStorage.getItem("jwt_token");
             const nuevoPrecio = parseFloat(document.getElementById("inputPrecio").value);
             const alerta = document.getElementById("alertaPrecio");
-            if (!nuevoPrecio || nuevoPrecio <= 0) return;
+            if (!nuevoPrecio || nuevoPrecio <= 0) {
+                alerta.innerHTML = `<div class="alert bg-warning text-dark border-0 py-2 mt-3">Ingresa un valor válido.</div>`;
+                return;
+            }
             try {
                 const response = await fetch("/api/configuracion/precio", {
                     method: "PUT",
@@ -193,10 +331,14 @@
                     body: JSON.stringify({ precio: nuevoPrecio })
                 });
                 if (response.ok) {
-                    alerta.innerHTML = `<div class="alert alert-success py-2">¡Precio actualizado!</div>`;
+                    alerta.innerHTML = `<div class="alert bg-success text-white border-0 py-2 mt-3">¡Precio actualizado!</div>`;
                     setTimeout(() => { alerta.innerHTML = ""; bootstrap.Modal.getInstance(document.getElementById('modalPrecio')).hide(); }, 1500);
+                } else {
+                    alerta.innerHTML = `<div class="alert bg-danger text-white border-0 py-2 mt-3">Error al guardar.</div>`;
                 }
-            } catch (error) {}
+            } catch (error) {
+                alerta.innerHTML = `<div class="alert bg-danger text-white border-0 py-2 mt-3">Error de conexión.</div>`;
+            }
         }
     </script>
 </body>

@@ -3,32 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gimnasio - Mi Panel</title>
+    <title>Gym Flex - Mi Panel</title>
+    
+    <!-- Bootstrap CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body class="bg-light">
 
-    <nav class="navbar navbar-dark bg-dark mb-4">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Paleta de colores Dark Mode */
+        :root {
+            --gym-yellow: #fce300;
+            --gym-yellow-hover: #d9c300;
+            --bg-dark: #0a0a0a;
+            --card-bg: #141414;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Roboto', sans-serif;
+            color: #ffffff;
+        }
+
+        h1, h2, h3, h4, h5, .navbar-brand {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+
+        /* Navbar personalizada */
+        .navbar {
+            background-color: var(--card-bg) !important;
+            border-bottom: 3px solid var(--gym-yellow);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Tarjeta principal */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid #2a2a2a;
+            border-top: 4px solid var(--gym-yellow);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Caja de Info de Cuota */
+        .info-box {
+            background-color: #1a1a1a;
+            border-left: 4px solid var(--gym-yellow);
+            border-radius: 6px;
+        }
+
+        /* Botón Gym Principal */
+        .btn-gym {
+            background-color: var(--gym-yellow);
+            color: #000;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gym:hover {
+            background-color: var(--gym-yellow-hover);
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(252, 227, 0, 0.3);
+        }
+
+        .btn-gym:disabled {
+            background-color: #777;
+            color: #ccc;
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR SOCIO -->
+    <nav class="navbar navbar-dark mb-4">
         <div class="container">
-            <span class="navbar-brand mb-0 h1">GimnasioFit</span>
-            <button class="btn btn-outline-light btn-sm" onclick="cerrarSesion()">Cerrar Sesión</button>
+            <span class="navbar-brand d-flex align-items-center mb-0 h1">
+                <img src="storiesdown.webp" alt="Logo Gym Flex" style="height: 40px; border-radius: 4px;" class="me-2">
+                Gym Flex
+            </span>
+            <button class="btn btn-outline-danger btn-sm fw-bold" onclick="cerrarSesion()">
+                <i class="bi bi-box-arrow-right"></i> Salir
+            </button>
         </div>
     </nav>
 
-    <div class="container" style="max-width: 600px;">
-        <div class="card shadow-sm border-0">
-            <div class="card-body text-center p-5">
-                <i class="bi bi-person-bounding-box display-1 text-primary mb-3"></i>
-                <h2 id="saludoSocio" class="mb-4">¡Hola!</h2>
+    <!-- PANEL PRINCIPAL -->
+    <div class="container my-5" style="max-width: 600px;">
+        <div class="card shadow-lg border-0">
+            <div class="card-body text-center p-4 p-md-5">
                 
-                <div class="p-4 bg-info bg-opacity-10 rounded mb-4 border border-info">
-                    <h5 class="text-info-emphasis">Gestión de Cuota</h5>
-                    <p class="mb-1">Valor mensual: <strong id="valorCuota"></strong></p>
+                <!-- Icono de perfil -->
+                <i class="bi bi-person-circle display-1 mb-3 d-inline-block" style="color: var(--gym-yellow);"></i>
+                
+                <h2 id="saludoSocio" class="mb-4 text-white">¡Hola!</h2>
+                
+                <!-- Info de Cuota -->
+                <div class="p-4 info-box mb-5 text-start shadow-sm">
+                    <h5 class="text-white mb-2"><i class="bi bi-wallet2 me-2" style="color: var(--gym-yellow);"></i> Gestión de Cuota</h5>
+                    <p class="mb-1 text-secondary" style="font-size: 1.1rem;">Valor mensual: <strong id="valorCuota" class="text-white"></strong></p>
                 </div>
 
-                <button id="btnPagar" class="btn btn-primary btn-lg w-100 mb-3" onclick="generarPago()">
-                    <i class="bi bi-credit-card"></i> Pagar Cuota con Mercado Pago
+                <!-- Botón de Pago -->
+                <button id="btnPagar" class="btn btn-gym btn-lg w-100 mb-3 py-3" onclick="generarPago()">
+                    <i class="bi bi-credit-card-fill me-2"></i> Pagar Cuota con Mercado Pago
                 </button>
                 
                 <div id="pagoAlert"></div>
@@ -60,7 +151,7 @@
             const alertContainer = document.getElementById("pagoAlert");
 
             btn.disabled = true;
-            btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Generando pago seguro...`;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Generando pago seguro...`;
             alertContainer.innerHTML = "";
 
             try {
@@ -90,12 +181,17 @@
                 mostrarError("No se pudo contactar al servidor de pagos.");
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="bi bi-credit-card"></i> Pagar Cuota con Mercado Pago`;
+                btn.innerHTML = `<i class="bi bi-credit-card-fill me-2"></i> Pagar Cuota con Mercado Pago`;
             }
         }
 
         function mostrarError(msj) {
-            document.getElementById("pagoAlert").innerHTML = `<div class="alert alert-danger mt-3">${msj}</div>`;
+            // Error adaptado para Dark Mode
+            document.getElementById("pagoAlert").innerHTML = `
+                <div class="alert bg-danger text-white border-0 mt-4 shadow-sm text-start">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> ${msj}
+                </div>
+            `;
         }
 
         function cerrarSesion() {
