@@ -23,7 +23,7 @@ public class RecordatorioService {
     private String templateName;
 
   
-    @Scheduled(cron = "0 14 10 * * ?", zone = "America/Argentina/Buenos_Aires")
+    @Scheduled(cron = "0 26 10 * * ?", zone = "America/Argentina/Buenos_Aires")
     public void enviarRecordatoriosVencimiento() {
         LocalDate manana = LocalDate.now().plusDays(1);
         List<Socio> sociosAVencer = socioRepository.findByFechaVencimientoCuota(manana);
