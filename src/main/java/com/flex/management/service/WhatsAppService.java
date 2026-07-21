@@ -24,7 +24,6 @@ public class WhatsAppService {
     @Value("${whatsapp.api.token}")
     private String accessToken;
 
-    // 1. Agregamos nombreSocio como tercer parámetro
     public void enviarMensajeTemplate(String numeroDestino, String templateName, String nombreSocio) {
         RestTemplate restTemplate = new RestTemplate();
         
@@ -51,24 +50,22 @@ public class WhatsAppService {
         // ==========================================
         List<Map<String, Object>> components = new ArrayList<>();
         
-        // Indicamos que la variable va en el cuerpo (body) del mensaje
-        Map<String, Object> bodyComponent = new HashMap<>();
-        bodyComponent.put("type", "body"); 
+        Map<String, Object> headerComponent = new HashMap<>();
+        headerComponent.put("type", "header"); 
 
-        // Creamos la lista de parámetros (en este caso, solo uno)
         List<Map<String, String>> parameters = new ArrayList<>();
         Map<String, String> paramNombre = new HashMap<>();
         paramNombre.put("type", "text");
-        paramNombre.put("text", nombreSocio); // Reemplaza {{1}} con el nombre
+        paramNombre.put("text", nombreSocio); 
         
         parameters.add(paramNombre);
-        bodyComponent.put("parameters", parameters);
-        components.add(bodyComponent);
+        headerComponent.put("parameters", parameters);
+        components.add(headerComponent);
         
-        // Enganchamos los componentes al template
         template.put("components", components);
         // ==========================================
 
+        // 🔥 ¡ESTA ES LA LÍNEA QUE FALTABA! Enganchamos el template al body
         body.put("template", template);
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
