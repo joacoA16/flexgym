@@ -62,9 +62,9 @@ public class MercadoPagoService {
 
         // 2. Configurar URLs de retorno usando urlLimpia
         PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                .success(urlLimpia + "/pago-exitoso") 
-                .pending(urlLimpia + "/pago-pendiente")
-                .failure(urlLimpia + "/pago-fallido")
+                .success(urlLimpia + "/pagoexitoso")
+                .pending(urlLimpia + "/pagopendiente")
+                .failure(urlLimpia + "/pagofallido")
                 .build();
 
         // 3. Crear la petición de la preferencia

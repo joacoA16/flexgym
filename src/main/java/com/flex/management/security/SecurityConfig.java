@@ -26,10 +26,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/pagos/webhook").permitAll()
                 
-                .requestMatchers("/pago-exitoso", "/pago-pendiente", "/pago-fallido").permitAll()
+                .requestMatchers("/pago-exitoso", "/pago-pendiente", "/pago-fallido", "/pagoexitoso", "/pagopendiente", "/pagofallido").permitAll()
                 .requestMatchers("/error").permitAll()
                 .requestMatchers("/", "/*.html", "/*.css", "/*.js","/**/*.webp").permitAll()
-                .requestMatchers("/api/auth/**", "/pago-exitoso", "/pago-pendiente", "/pago-fallido", "/api/pagos/webhook","/api/whatsapp/webhook").permitAll()
+                .requestMatchers("/api/auth/**", "/pago-exitoso", "/pago-pendiente", "/pago-fallido", "/pagoexitoso", "/pagopendiente", "/pagofallido", "/api/pagos/webhook","/api/whatsapp/webhook").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/socios/buscar").hasAnyRole("SOCIO", "ADMIN")
                 .requestMatchers("/api/pagos/mercado-pago/**").hasRole("SOCIO")
                 .requestMatchers("/api/socios/**").hasRole("ADMIN")

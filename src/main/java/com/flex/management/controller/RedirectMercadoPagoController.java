@@ -119,7 +119,7 @@ public class RedirectMercadoPagoController {
                 .formatted(title, accentClass, accentClass, iconClass, heading, message);
     }
 
-    @GetMapping(value = "/pago-exitoso", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = {"/pago-exitoso", "/pagoexitoso"}, produces = MediaType.TEXT_HTML_VALUE)
     public String pagoExitoso() {
         return renderPagoPage(
                 "Pago Exitoso",
@@ -130,7 +130,7 @@ public class RedirectMercadoPagoController {
         );
     }
 
-    @GetMapping(value = "/pago-pendiente", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = {"/pago-pendiente", "/pagopendiente"}, produces = MediaType.TEXT_HTML_VALUE)
     public String pagoPendiente() {
         return renderPagoPage(
                 "Pago Pendiente",
@@ -141,7 +141,7 @@ public class RedirectMercadoPagoController {
         );
     }
 
-    @GetMapping(value = "/pago-fallido", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = {"/pago-fallido", "/pagofallido"}, produces = MediaType.TEXT_HTML_VALUE)
     public String pagoFallido() {
         return renderPagoPage(
                 "Pago Fallido",
