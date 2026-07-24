@@ -115,13 +115,11 @@ public class MercadoPagoService {
             }
 
         } catch (DataIntegrityViolationException e) {
-            // ATRAPAMOS LA CONDICIÓN DE CARRERA AQUÍ
-            // Este catch específico frena el error rojo de la consola cuando PostgreSQL bloquea el duplicado
-            System.out.println("🛡️ [DB] Webhook simultáneo ignorado. El pago [" + paymentId + "] ya fue registrado por otro hilo.");
-            
-        } catch (Exception e) {
-            // Cualquier otro error real cae aquí
-            System.err.println("❌ Error al consultar el pago en Mercado Pago: " + e.getMessage());
-        }
+    System.out.println("🛡️ [DB] Webhook simultáneo ignorado. El pago [" + paymentId + "] ya fue registrado por otro hilo.");
+} catch (Exception e) {
+    System.err.println("❌ Error al consultar el pago en Mercado Pago: " + e.getMessage());
+    e.printStackTrace();
+    throw new RuntimeException(e);
+}
     }
 }

@@ -133,10 +133,12 @@ public ResponseEntity<Void> recibirNotificacionMercadoPago(
         }
         
     } catch (Exception e) {
-         System.err.println("❌ Error interno procesando webhook: " + e.getMessage());
-    }
-    
-    System.out.println("=========================================\n");
-    return ResponseEntity.ok().build(); // Siempre devuelve 200 para que MP deje de insistir
+    System.err.println("❌ Error interno procesando webhook: " + e.getMessage());
+    e.printStackTrace();
+    return ResponseEntity.status(500).build();
+}
+
+System.out.println("=========================================\n");
+return ResponseEntity.ok().build();
 }
 }
