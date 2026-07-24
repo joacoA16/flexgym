@@ -143,7 +143,9 @@ public class EmailService {
             System.out.println("📧 Correo con rutina enviado con éxito a: " + emailSocio);
 
         } catch (Exception e) {
-            throw new RuntimeException("Error al estructurar o enviar el correo electrónico: " + e.getMessage());
+            System.err.println("❌ Error al estructurar o enviar el correo electrónico: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error al estructurar o enviar el correo electrónico", e);
         }
     }
 
