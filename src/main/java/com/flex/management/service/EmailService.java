@@ -1,4 +1,5 @@
 package com.flex.management.service;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 public class EmailService {
 
     private final JavaMailSender mailSender;
+    @Value("${app.mail.from}")
+    private String mailFrom;
 
     public void enviarRutinaHtml(String emailSocio, String nombreSocio, RutinaDto rutina) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -21,6 +24,7 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             
             helper.setTo(emailSocio);
+            helper.setFrom(mailFrom);
             helper.setSubject("💪 Tu nueva rutina [" + rutina.getNombreRutina() + "] está lista");
             
             String nombreEscapado = escapeHtml(nombreSocio);
