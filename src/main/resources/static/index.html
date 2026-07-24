@@ -25,9 +25,22 @@
         }
 
         body {
-            background-color: var(--bg-dark);
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, rgba(252, 227, 0, 0.12), transparent 28%),
+                linear-gradient(180deg, #111111 0%, #070707 100%);
             font-family: 'Roboto', sans-serif;
             color: #ffffff;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.05), transparent 22%);
+            pointer-events: none;
         }
 
         h4 {
@@ -39,11 +52,12 @@
 
         /* Estilo de la tarjeta principal */
         .login-card {
-            background-color: var(--card-bg);
-            border: 1px solid #2a2a2a;
+            background: rgba(20, 20, 20, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-top: 4px solid var(--gym-yellow);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(10px);
         }
 
         /* Contenedor del Logo */
@@ -55,7 +69,8 @@
         .logo-container img {
             max-width: 180px;
             height: auto;
-            border-radius: 8px; /* Por si la imagen tiene bordes duros */
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
         }
 
         /* Inputs y Selects adaptados al Dark Mode */
@@ -70,7 +85,8 @@
             background-color: var(--input-bg);
             border: 1px solid #333;
             color: #fff;
-            padding: 0.75rem 1rem;
+            padding: 0.9rem 1rem;
+            border-radius: 14px;
         }
 
         .form-control:focus, .form-select:focus {
@@ -98,8 +114,10 @@
             font-weight: 700;
             text-transform: uppercase;
             border: none;
-            padding: 0.75rem;
+            padding: 0.9rem;
+            border-radius: 14px;
             transition: all 0.3s ease;
+            box-shadow: 0 14px 30px rgba(252, 227, 0, 0.16);
         }
 
         .btn-gym:hover {
@@ -108,11 +126,15 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(252, 227, 0, 0.3);
         }
+
+        .alert {
+            border-radius: 14px;
+        }
     </style>
 </head>
 <body class="d-flex align-items-center justify-content-center" style="height: 100vh;">
 
-    <div class="card login-card p-4" style="width: 100%; max-width: 420px;">
+    <div class="card login-card p-4 p-md-5" style="width: 100%; max-width: 440px;">
         
         <!-- Implementación del logo -->
         <div class="logo-container">
@@ -121,6 +143,7 @@
 
         <div class="text-center mb-4">
             <h4 class="mb-0"><i class="bi bi-door-open-fill text-warning me-2" style="color: var(--gym-yellow) !important;"></i>Ingreso al Sistema</h4>
+            <p class="text-secondary mt-2 mb-0">Accedé a tu panel y gestioná todo desde un solo lugar.</p>
         </div>
         
         <div class="card-body p-0">

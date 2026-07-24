@@ -25,9 +25,13 @@
         }
 
         body {
-            background-color: var(--bg-dark);
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, rgba(252, 227, 0, 0.10), transparent 30%),
+                linear-gradient(180deg, #111111 0%, #070707 100%);
             font-family: 'Roboto', sans-serif;
             color: #ffffff;
+            overflow-x: hidden;
         }
 
         h1, h2, h3, h4, h5, .navbar-brand {
@@ -39,9 +43,10 @@
 
         /* Navbar personalizada */
         .navbar {
-            background-color: var(--card-bg) !important;
-            border-bottom: 3px solid var(--gym-yellow);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            background: rgba(20, 20, 20, 0.92) !important;
+            border-bottom: 1px solid rgba(252, 227, 0, 0.35);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(10px);
         }
 
         .nav-link.active {
@@ -51,16 +56,17 @@
 
         /* Tarjetas principales */
         .card {
-            background-color: var(--card-bg);
-            border: 1px solid #2a2a2a;
+            background: rgba(20, 20, 20, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-top: 4px solid var(--gym-yellow);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(10px);
         }
 
         .card-header {
             background-color: transparent;
-            border-bottom: 1px solid #2a2a2a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         /* Inputs y Selects */
@@ -79,6 +85,8 @@
             background-color: var(--input-bg);
             border: 1px solid #333;
             color: #fff;
+            border-radius: 14px;
+            padding: 0.9rem 1rem;
         }
 
         .form-control:focus, .form-select:focus {
@@ -94,7 +102,7 @@
 
         /* Tabla oscura */
         .table-dark {
-            background-color: var(--card-bg);
+            background-color: rgba(20, 20, 20, 0.92);
         }
         
         .table-dark th {
@@ -103,8 +111,12 @@
         }
         
         .table-dark td {
-            background-color: #1a1a1a;
+            background-color: rgba(26, 26, 26, 0.92);
             border-color: #333;
+        }
+
+        .table-dark tbody tr:hover td {
+            background-color: #20242b;
         }
 
         /* Botones */
@@ -117,6 +129,8 @@
             text-transform: uppercase;
             border: none;
             transition: all 0.3s ease;
+            border-radius: 14px;
+            box-shadow: 0 14px 30px rgba(252, 227, 0, 0.16);
         }
 
         .btn-gym:hover {
@@ -126,10 +140,19 @@
             box-shadow: 0 6px 15px rgba(252, 227, 0, 0.3);
         }
 
+        .badge {
+            border-radius: 999px;
+            padding: 0.45rem 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
         /* Modal oscuro */
         .modal-content {
-            background-color: var(--card-bg);
-            border: 1px solid #333;
+            background-color: rgba(20, 20, 20, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 22px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
         }
 
         .modal-header {
@@ -149,6 +172,25 @@
             border: 1px solid #333;
             color: var(--gym-yellow);
             font-weight: bold;
+            border-radius: 14px;
+        }
+
+        .btn-outline-warning,
+        .btn-outline-danger,
+        .btn-outline-secondary {
+            border-radius: 14px;
+            border-width: 1.5px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-outline-warning:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.16);
+        }
+
+        .btn-outline-danger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.18);
         }
         
         .btn-close-white {
